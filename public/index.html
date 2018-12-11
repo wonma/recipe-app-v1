@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Recipe App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body>
+    
+    <h1>Recipe App</h1>
+    <div id="filterIngreArea"></div>
+    <div id="filterTypeArea">
+            <fieldset id="ingredients">
+                <legend>Ingredients</legend> 
+                <input type="checkbox" id="beef" name="foodType" value="beef"><label for="beef"></label>Beef</label>
+                <input type="checkbox" id="pork" name="foodType" value="pork"><label for="pork"></label>Pork</label>
+                <input type="checkbox" id="chicken" name="foodType" value="chicken"><label for="chicken"></label>Chicken</label>
+                <input type="checkbox" id="egg" name="foodType" value="egg"><label for="egg"></label>Egg</label>
+                <input type="checkbox" id="tomato" name="foodType" value="tomato"><label for="tomato"></label>Tomato</label>
+                <input type="checkbox" id="potato" name="foodType" value="potato"><label for="potato"></label>Potato</label>
+            </fieldset>
+            <fieldset id="foodType">
+                <legend>Food Type</legend>
+                <input type="radio" id="any" name="foodType" value="any" checked><label for="anyType"></label>Any</label>
+                <input type="radio" id="toppedRice" name="foodType" value="toppedRice"><label for="toppedRice"></label>Topped Rice</label>
+                <input type="radio" id="grilled" name="foodType" value="grilled"><label for="grilled" ></label>Grilled</label>
+                <input type="radio" id="noodles" name="foodType" value="noodles"><label for="noodles"></label>Noodles</label>
+            </fieldset>
+    </div>
+    <h2>Saved Recipes</h2>
+    <div id="recipesArea"></div>
+    <script src="./scripts/bundle.js"></script>
+</body>
+</html>
