@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Edit page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/style.css">
+
+</head>
+<body>
+    <h2>This is edit page.</h2>
+    <input type="text" id="edit-title" placeholder="title">
+    <fieldset id="foodType">
+        <input type="radio" name="foodType" value="toppedRice" id="toppedRice"><label for="toppedRice">Topped Rice</label>
+        <input type="radio" name="foodType" value="grilled" id="grilled"><label for="grilled">Grilled</label>
+        <input type="radio" name="foodType" value="noodles" id="noodles"><label for="noodles">Noodles</label>
+        <input type="radio" name="foodType" value="soup" id="soup"><label for="soup">Soup</label>
+        <input type="radio" name="foodType" value="any" id="others"><label for="others">Others</label>
+    </fieldset>
+    <fieldset>
+    <label for="serving">serving</label>
+    <select id="serving" name="serving">
+        <option value="serve1">1</option>
+        <option value="serve2">2</option>
+        <option value="serve3">3</option>
+        <option value="serve4">4</option>
+    </select>
+    </fieldset>
+    <fieldset id="mainIngres">
+        <legend>Add Main Ingredients</legend>
+        <div id="mainIngreArea"></div>
+        <form id="mainIngreAdd">
+            <input type="text" placeholder="name" name="name">
+            <input type="text" placeholder="amount" name="amount">
+            <button>+</button>
+        </form>
+    </fieldset>
+    <fieldset id="subIngres">
+        <legend>Add Sub Ingredients</legend>
+        <form id="subIngreAdd">
+            <input type="text" id="subIngreTitle" placeholder="name" name="subIngreTitle">
+            <input type="text" id="subIngreAmount" placeholder="amount" name="subIngreAmount">
+            <button>+</button>
+        </form>
+    </fieldset>
+    <textarea id="edit-steps"></textarea>
+    <script src="./scripts/edit-bundle.js"></script>
+</body>
+</html>

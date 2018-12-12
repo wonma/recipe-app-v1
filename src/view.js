@@ -75,15 +75,31 @@ const recipes = [
 ]
 
 const getRecipeDOM = (recipe) => {
-    const recipeEl = document.createElement('div')
+    const recipeLi = document.createElement('li')
+    const recipeA = document.createElement('a')
+    recipeA.classList.add('recipe-link')
+    recipeA.setAttribute('href', `/recipe.html#${recipe.id}`)
+    recipeLi.appendChild(recipeA)
 
     // Title
     const titleEl = document.createElement('h3')
+    titleEl.classList.add('recipe-title')
     titleEl.textContent = recipe.title
+    recipeA.appendChild(titleEl)
+
+    // Go-to-edit button
+    const editEl = document.createElement('a')
+    editEl.textContent = 'edit'
+    editEl.classList.add('recipe-edit')
+    editEl.setAttribute('href', `/edit.html#${recipe.id}`)
+    recipeA.appendChild(editEl)
+
 
     // Food Type
     const foodTypeEl = document.createElement('span')
     foodTypeEl.textContent = recipe.type
+    recipeA.appendChild(foodTypeEl)
+
 
     // Match Score
     const matchScoreEl = document.createElement('span')
@@ -98,6 +114,8 @@ const getRecipeDOM = (recipe) => {
             matchScoreEl.textContent = 'Need to go for a grocery shopping!'
         }
     }
+    recipeA.appendChild(matchScoreEl)
+
     
     // Main Ingredient
     const mainIngreArea = document.createElement('div')
@@ -106,6 +124,8 @@ const getRecipeDOM = (recipe) => {
         mainIngreEl.textContent = eachIngre.name  
         mainIngreArea.appendChild(mainIngreEl)     
     })
+    recipeA.appendChild(mainIngreArea)
+
 
     // Sub Ingredient
     const subIngreArea = document.createElement('div')
@@ -114,34 +134,26 @@ const getRecipeDOM = (recipe) => {
         subIngreEl.textContent = eachIngre.name
         subIngreArea.appendChild(subIngreEl)
     })
+    recipeA.appendChild(subIngreArea)
 
-
-
-    recipeEl.appendChild(titleEl)
-    recipeEl.appendChild(foodTypeEl)
-    recipeEl.appendChild(matchScoreEl)
-    recipeEl.appendChild(mainIngreArea)
-    recipeEl.appendChild(subIngreArea)
-
-
-
-    return recipeEl
+    return recipeLi
 }
 
 const filterRecipe = () => {
-    return recipes.filter((oneRecipe) => {
-        const filterIngre = getFilterIngre()
-        const filterType = getFilterType()
+    const filterIngre = getFilterIngre()
+    const filterType = getFilterType()
 
-        const chosenIngres = []
-        filterIngre.forEach((ingre) => {
-            if (ingre.chosen === true) {
-                chosenIngres.push(ingre.name)
-            }
-        })
+    const chosenIngres = []
+    filterIngre.forEach((ingre) => {
+        if (ingre.chosen === true) {
+            chosenIngres.push(ingre.name)
+        }
+    })
+
+    const filteredRecipes = recipes.filter((oneRecipe) => {
 
         // Main Ingredients Array
-        let mainIngresInOne = []
+        let mainIngresInOne = [] //eg. ['beef', 'pork']
         oneRecipe.mainIngre.forEach((each) => {
             mainIngresInOne.push(each.name)
         })
@@ -153,18 +165,16 @@ const filterRecipe = () => {
         })
 
         // Main Ingredient (matching each to chosen ingredients)
-        let matchedList = []
+        let matchedList = [] //eg. [true, false]
         mainIngresInOne.forEach((ingre) => {
             matchedList.push(chosenIngres.includes(ingre))
         })
-        console.log(matchedList)
 
         // Sub Ingredient (matching each to chosen ingredients)
         let subMatchedList = []
         subIngresInOne.forEach((ingre) => {
             subMatchedList.push(chosenIngres.includes(ingre))
         })
-        console.log(subMatchedList)
 
         // MatchRate
         const mainMatchedRate = (matchedList.filter(each => each).length / matchedList.length) * .8
@@ -185,11 +195,38 @@ const filterRecipe = () => {
         }
 
     })
+
+    // Sorting criteria
+    if (chosenIngres.length <= 0) {
+        filteredRecipes.sort((a, b) => { 
+            if (a.id > b.id) {
+                return 1
+            } else if (b.id > a.id) {
+                return -1
+            } else {
+                return 0
+            }
+        })
+    } else {
+        filteredRecipes.sort((a, b) => { 
+            if (a.matchRate < b.matchRate) {
+                return 1
+            } else if (b.matchRate < a.matchRate) {
+                return -1
+            } else {
+                return 0
+            }
+        })
+    }
+
+
+    return filteredRecipes
 }
 
 const renderList = () => {
 
     const filteredRecipes = filterRecipe()
+    console.log(filteredRecipes)
 
     const recipesArea = document.querySelector('#recipesArea')
     recipesArea.innerHTML = ''

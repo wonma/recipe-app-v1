@@ -1,0 +1,23 @@
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+/*  Main  */
+
+.recipe-link {
+    display: block;
+}
+
+.recipe-title {
+    display: inline-block;
+}
+
+.recipe-edit {
+    color: orangered;
+}

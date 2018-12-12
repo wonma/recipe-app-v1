@@ -1,24 +1,18 @@
+import uuidv4 from 'uuid/v4'
 import { renderList } from './view'
 import { getFilterIngre, getFilterType } from './filters'
 
 
-
-// const setFilterIntre = ({beef, pork, chicken, tomato, potato}) => {
-//     filterIngre.beef = beef
-//     filterIngre.pork = pork
-//     filterIngre.chicken = chicken
-//     filterIngre.tomato = tomato
-//     filterIngre.potato = potato
-// }
-
 renderList()
 
-// Destructuring
-// const { beef, pork, chicken, tomato, potato } = filterIngre
+document.querySelector('#add-new').addEventListener('click', (e) => {
+    const id = uuidv4()
+    // console.log(e.target)
+    location.assign(`/edit.html#${id}`)
+})
 
 document.querySelector('#ingredients').addEventListener('change', (e)=> {
     const filterIngre = getFilterIngre()
-    // filterIngre[e.target.value] = e.target.checked
     filterIngre.forEach((ingre) => {
         if (ingre.name === e.target.value) {
             ingre.chosen = e.target.checked
