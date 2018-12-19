@@ -1,13 +1,16 @@
-import uuidv4 from 'uuid/v4'
 import { renderList } from './view'
-import { getFilterIngre, getFilterType } from './filters'
+import { getFilterIngre, getFilterType, addIngre } from './filters'
+import { createRecipe } from './recipe'
 
 
 renderList()
 
+document.querySelector('#add-ingre').addEventListener('click', (e) => {
+    addIngre()
+})
+
 document.querySelector('#add-new').addEventListener('click', (e) => {
-    const id = uuidv4()
-    // console.log(e.target)
+    const id = createRecipe()
     location.assign(`/edit.html#${id}`)
 })
 
@@ -26,5 +29,3 @@ document.querySelector('#foodType').addEventListener('change', (e) => {
     filterType.type = e.target.value
     renderList()
 })
-
-

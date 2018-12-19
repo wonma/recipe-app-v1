@@ -10,41 +10,44 @@
 </head>
 <body>
     <h2>This is edit page.</h2>
-    <input type="text" id="edit-title" placeholder="title">
-    <fieldset id="foodType">
-        <input type="radio" name="foodType" value="toppedRice" id="toppedRice"><label for="toppedRice">Topped Rice</label>
-        <input type="radio" name="foodType" value="grilled" id="grilled"><label for="grilled">Grilled</label>
-        <input type="radio" name="foodType" value="noodles" id="noodles"><label for="noodles">Noodles</label>
-        <input type="radio" name="foodType" value="soup" id="soup"><label for="soup">Soup</label>
-        <input type="radio" name="foodType" value="any" id="others"><label for="others">Others</label>
-    </fieldset>
-    <fieldset>
-    <label for="serving">serving</label>
-    <select id="serving" name="serving">
-        <option value="serve1">1</option>
-        <option value="serve2">2</option>
-        <option value="serve3">3</option>
-        <option value="serve4">4</option>
-    </select>
-    </fieldset>
-    <fieldset id="mainIngres">
-        <legend>Add Main Ingredients</legend>
-        <div id="mainIngreArea"></div>
-        <form id="mainIngreAdd">
-            <input type="text" placeholder="name" name="name">
-            <input type="text" placeholder="amount" name="amount">
-            <button>+</button>
-        </form>
-    </fieldset>
-    <fieldset id="subIngres">
-        <legend>Add Sub Ingredients</legend>
-        <form id="subIngreAdd">
-            <input type="text" id="subIngreTitle" placeholder="name" name="subIngreTitle">
-            <input type="text" id="subIngreAmount" placeholder="amount" name="subIngreAmount">
-            <button>+</button>
-        </form>
-    </fieldset>
-    <textarea id="edit-steps"></textarea>
+    <form id="edit-form">
+        <input type="text" id="editTitle" name="editTitle" placeholder="title">
+
+        <fieldset id="editType" name="editType">
+            <input type="radio" name="editType" class="foodType" value="toppedRice" id="toppedRice"><label for="toppedRice">Topped Rice</label>
+            <input type="radio" name="editType" class="foodType" value="grilled" id="grilled"><label for="grilled">Grilled</label>
+            <input type="radio" name="editType" class="foodType" value="noodles" id="noodles"><label for="noodles">Noodles</label>
+            <input type="radio" name="editType" class="foodType" value="soup" id="soup"><label for="soup">Soup</label>
+            <input type="radio" name="editType" class="foodType" value="any" id="others"><label for="others">Others</label>
+        </fieldset>
+
+        <fieldset>
+            <label for="serving">serving</label>
+        <select id="serving" name="editServing">
+            <option class="foodServing" id="serving1" value="1">1</option>
+            <option class="foodServing" id="serving2" value="2">2</option>
+            <option class="foodServing" id="serving3" value="3">3</option>
+            <option class="foodServing" id="serving4" value="4">4</option>
+        </select>
+        </fieldset>
+
+        <fieldset id="mainIngres">
+            <legend>Add Main Ingredients <button type="button" id="addMainIngre">+</button></legend>
+            <div id="mainIngreArea"></div>
+        </fieldset>
+
+        <fieldset id="subIngres">
+            <legend>Add Sub Ingredients <button type="button" id="addSubIngre">+</button></legend>
+            <div id="subIngreArea"></div>
+        </fieldset>
+
+        <textarea id="editBody" name="editBody" placeholder="Write how to make"></textarea>
+        
+        <button type="button" id="edit-delete">Delete</button>
+        <button type="submit">Save</button>
+    </form>
+
+
     <script src="./scripts/edit-bundle.js"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@ module.exports = {
         index: ['babel-polyfill', './src/index.js'],
         edit: ['babel-polyfill', './src/edit.js'],
         view: ['babel-polyfill', './src/view.js']
-    },  //relative path  나: 'src/index.js'
+    },  
     output: {
         path: path.resolve(__dirname, 'public/scripts'),
         filename: '[name]-bundle.js'

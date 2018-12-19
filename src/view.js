@@ -1,78 +1,7 @@
+import { getData } from './recipe'
 import { getFilterIngre, getFilterType } from './filters'
 
-const recipes = [
-    {
-        id: 'a123',
-        title: 'Beef rice',
-        recipe: 'Step 1 blablabla Step 2 blablabla',
-        type: 'toppedRice',
-        serving: 3,
-        mainIngre: [{
-            name: 'beef',
-            amount: '600g'
-        }, {
-            name: 'rice',
-            amount: '3 bowls'
-        }],
-        subIngre: [{
-            name: 'onion',
-            amount: 'one'
-        }, {
-            name: 'soy sauce',
-            amount: '3 Tbs'
-        }],
-        others: ['sesame oil, salt, kimchi'],
-        matchRate: 0
-    },
-
-    {
-        id: 'b123',
-        title: 'Beef pork noodle',
-        recipe: 'Step 1 blablabla Step 2 blablabla',
-        type: 'noodles',
-        serving: 1,
-        mainIngre: [{
-            name: 'beef',
-            amount: '100g'
-        }, {
-            name: 'pork',
-            amount: '160g'
-        }],
-        subIngre: [{
-            name: 'onion',
-            amount: 'one'
-        }, {
-            name: 'broth',
-            amount: '2 cups'
-        }],
-        others: ['green onions, peppers'],
-        matchRate: 0
-    },
-
-    {
-        id: 'c123',
-        title: 'Delicious Grilled Kimchi',
-        recipe: 'Step 1 blablabla Step 2 blablabla',
-        type: 'grilled',
-        serving: 1,
-        mainIngre: [{
-            name: 'kimchi',
-            amount: '100g'
-        }, {
-            name: 'tofu',
-            amount: '160g'
-        }],
-        subIngre: [{
-            name: 'potato',
-            amount: 'one'
-        }, {
-            name: 'pork',
-            amount: '2 cups'
-        }],
-        others: ['green onions, peppers'],
-        matchRate: 0
-    }
-]
+const recipes = getData()
 
 const getRecipeDOM = (recipe) => {
     const recipeLi = document.createElement('li')
@@ -99,7 +28,6 @@ const getRecipeDOM = (recipe) => {
     const foodTypeEl = document.createElement('span')
     foodTypeEl.textContent = recipe.type
     recipeA.appendChild(foodTypeEl)
-
 
     // Match Score
     const matchScoreEl = document.createElement('span')
@@ -143,7 +71,7 @@ const filterRecipe = () => {
     const filterIngre = getFilterIngre()
     const filterType = getFilterType()
 
-    const chosenIngres = []
+    const chosenIngres = [] //eg. ['beef', 'pork']
     filterIngre.forEach((ingre) => {
         if (ingre.chosen === true) {
             chosenIngres.push(ingre.name)
@@ -153,7 +81,7 @@ const filterRecipe = () => {
     const filteredRecipes = recipes.filter((oneRecipe) => {
 
         // Main Ingredients Array
-        let mainIngresInOne = [] //eg. ['beef', 'pork']
+        let mainIngresInOne = [] //eg. ['beef', 'pork loin']
         oneRecipe.mainIngre.forEach((each) => {
             mainIngresInOne.push(each.name)
         })
@@ -166,19 +94,30 @@ const filterRecipe = () => {
 
         // Main Ingredient (matching each to chosen ingredients)
         let matchedList = [] //eg. [true, false]
-        mainIngresInOne.forEach((ingre) => {
-            matchedList.push(chosenIngres.includes(ingre))
+        chosenIngres.forEach((ingre) => {
+            mainIngresInOne.forEach((each) => {
+                each.includes(ingre) ? matchedList.push(true) : matchedList.push(false)
+            })
         })
 
         // Sub Ingredient (matching each to chosen ingredients)
         let subMatchedList = []
-        subIngresInOne.forEach((ingre) => {
-            subMatchedList.push(chosenIngres.includes(ingre))
+        chosenIngres.forEach((ingre) => {
+            subIngresInOne.forEach((each) => {
+                each.includes(ingre) ? subMatchedList.push(true) : subMatchedList.push(false)
+            })
         })
 
         // MatchRate
-        const mainMatchedRate = (matchedList.filter(each => each).length / matchedList.length) * .8
-        const subMatchedRate = (subMatchedList.filter(each => each).length / subMatchedList.length) * .2
+        let mainMatchedRate = 0
+        let subMatchedRate = 0
+        if (matchedList.length > 0) {
+            mainMatchedRate = (matchedList.filter(each => each).length / oneRecipe.mainIngre.length) * .8
+        }
+        if (subMatchedList.length > 0) {
+            subMatchedRate = (subMatchedList.filter(each => each).length / oneRecipe.subIngre.length) * .2
+        }
+        
         oneRecipe.matchRate = (mainMatchedRate + subMatchedRate) * 100
 
         // type 판단
@@ -225,15 +164,29 @@ const filterRecipe = () => {
 
 const renderList = () => {
 
-    const filteredRecipes = filterRecipe()
-    console.log(filteredRecipes)
-
     const recipesArea = document.querySelector('#recipesArea')
     recipesArea.innerHTML = ''
-    filteredRecipes.forEach((recipe) => {
-        return recipesArea.appendChild(getRecipeDOM(recipe))
-    })
+    // recipes가 비었는지 확인한다
+    if (recipes.length <= 0) {
+        const noResultEl = document.createElement('p')
+        noResultEl.textContent = 'No result'
+        recipesArea.appendChild(noResultEl)    
+        return  
+    }
 
+    // recipes를 필터링해온다
+    const filteredRecipes = filterRecipe()
+
+    // recipes를 DOM으로 출력한다.
+    if (filteredRecipes.length > 0) {
+        filteredRecipes.forEach((recipe) => {
+            return recipesArea.appendChild(getRecipeDOM(recipe))
+        })
+    } else {
+        const noResultText = document.createElement('p')
+        noResultText.textContent = 'No recipe found'
+        recipesArea.appendChild(noResultText)
+    }
 
 }
 

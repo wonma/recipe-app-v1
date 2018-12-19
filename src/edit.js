@@ -1,75 +1,157 @@
+import { getData, saveData } from './recipe'
+import uuidv4 from 'uuid/v4'
 
-const newRecipe = 
-    {
-        id: 'a123',
-        title: 'Beef rice',
-        recipe: 'Step 1 blablabla Step 2 blablabla',
-        type: 'toppedRice',
-        serving: 3,
-        mainIngre: [{
-            name: 'beef',
-            amount: '600g'
-        }, {
-            name: 'rice',
-            amount: '3 bowls'
-        }],
-        subIngre: [{
-            name: 'onion',
-            amount: 'one'
-        }, {
-            name: 'soy sauce',
-            amount: '3 Tbs'
-        }],
-        others: ['sesame oil, salt, kimchi'],
-        matchRate: 0
+const recipes = getData()
+const recipeID = location.hash.substring(1)
+const theRecipe = recipes.find((recipe) => recipe.id === recipeID)
+
+
+document.querySelector('#edit-form').addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    theRecipe.title = e.target.elements.editTitle.value
+    theRecipe.type = e.target.elements.editType.value
+    theRecipe.serving = e.target.elements.editServing.value
+    theRecipe.recipe = e.target.elements.editBody.value
+    saveData()
+
+    location.assign(`/index.html`)
+})
+
+        // <button type="button" id="edit-delete">Delete</button>
+document.querySelector('#edit-delete').addEventListener('click', (e) => {
+    const theIndex = recipes.findIndex((recipe) => recipe.id === recipeID)
+    recipes.splice(theIndex, 1)
+    saveData()
+    
+    location.assign(`/index.html`)
+})
+
+// Initiating 'Title'
+const editTitle = document.querySelector('#editTitle')
+editTitle.value = theRecipe.title
+
+// Initiating 'Type'
+const editType = document.querySelectorAll('.foodType')
+Object.values(editType).forEach((each) => {
+    if (each.value === theRecipe.type) {
+        document.querySelector(`#${each.id}`).setAttribute('checked', 'checked')
+    }
+})
+
+// Initiating 'Serving'
+const editServing = document.querySelectorAll('.foodServing')
+Object.values(editServing).forEach((value) => {
+    if (value.value === theRecipe.serving) {
+        document.querySelector(`#${value.id}`).setAttribute('selected', 'selected')
+    }
+})
+
+// Initiating 'Recipe Body'
+const editBody = document.querySelector('#editBody')
+editBody.value = theRecipe.recipe
+
+// Initiating 'Main Ingre' (DOM)
+const generateIngreDOM = (ingre, type) => {
+    const ingreEl = document.createElement('div')
+    const nameEl = document.createElement('input')
+    const amountEl = document.createElement('input')
+    const removeEl = document.createElement('button')
+    
+    nameEl.value = ingre.name
+    amountEl.value = ingre.amount
+    removeEl.textContent = 'x'
+
+    nameEl.setAttribute('placeholder', 'name')
+    amountEl.setAttribute('placeholder', 'amount')
+
+    // Input Event Handler
+    nameEl.addEventListener('input', (e) => {
+        ingre.name = e.target.value
+        saveData()
+    })
+    amountEl.addEventListener('input', (e) => {
+        ingre.amount = e.target.value
+        saveData()
+    })
+
+
+    // Remove functionality
+    if (type === 'main') {
+        removeEl.addEventListener('click', () => {
+            const ingreIndex = theRecipe.mainIngre.findIndex((each) => each.id === ingre.id)
+            theRecipe.mainIngre.splice(ingreIndex, 1)
+
+            saveData()
+            renderIngre('main')
+        })
+    } else if (type === 'sub') {
+        removeEl.addEventListener('click', () => {
+            const ingreIndex = theRecipe.subIngre.findIndex((each) => each.id === ingre.id)
+            theRecipe.subIngre.splice(ingreIndex, 1)
+
+            saveData()
+            renderIngre('sub')
+        })
     }
 
 
-document.querySelector('#mainIngreAdd').addEventListener('submit', (e) => {
-    e.preventDefault()
-    // const filterIngre = getFilterIngre()
-    // filterIngre.forEach((ingre) => {
-    //     if (ingre.name === e.target.value) {
-    //         ingre.chosen = e.target.checked
-    //     }
-    // })
-
-    newRecipe.mainIngre.push({
-        name: e.target.elements.name.value,
-        amount: e.target.elements.amount.value
-    })
-
-    renderMainIngre()
-})
-
-const getIngreDOM = (ingre) => {
-    const ingreEl = document.createElement('div')
-    const nameEl = document.createElement('span')
-    const amountEl = document.createElement('span')
-    const removeEl = document.createElement('button')
-    
-    nameEl.textContent = ingre.name
     ingreEl.appendChild(nameEl)
-
-    amountEl.textContent = ingre.amount
     ingreEl.appendChild(amountEl)
-
-    removeEl.textContent = 'x'
-    // Remove functionality
-    removeEl.addEventListener('click', (e) => {
-        console.log(e)
-    })
     ingreEl.appendChild(removeEl)
-    
 
     return ingreEl
-} 
-
-const renderMainIngre = () => {
-    const mainIngreArea = document.querySelector('#mainIngreArea')
-    mainIngreArea.innerHTML = ''
-
-    newRecipe.mainIngre.forEach((mainIngreEach) => {
-        return mainIngreArea.appendChild(getIngreDOM(mainIngreEach))
-    })
 }
+
+// Initiating 'Main Ingre' (Render)
+const renderIngre = (type) => {
+
+    const ingreArea = document.querySelector(`#${type}IngreArea`)
+    ingreArea.innerHTML = ''
+    
+    if (type === 'main') {
+        theRecipe.mainIngre.forEach((ingre) => {
+            ingreArea.appendChild(generateIngreDOM(ingre, type))
+        })
+    } else if (type === 'sub') {
+        theRecipe.subIngre.forEach((ingre) => {
+            ingreArea.appendChild(generateIngreDOM(ingre, type))
+        })    
+    }
+
+    saveData()
+}
+
+renderIngre('main')
+renderIngre('sub')
+
+
+
+// Main Ingredient 'Add' Button
+document.querySelector('#addMainIngre').addEventListener('click', () => {
+    const ingreId = uuidv4()
+    theRecipe.mainIngre.push({
+        id: ingreId,
+        name: '',
+        amount: '',
+        ingreType: 'main'
+    })
+    renderIngre('main')
+})
+
+// Main Ingredient 'Add' Button
+document.querySelector('#addSubIngre').addEventListener('click', () => {
+    const ingreId = uuidv4()
+    theRecipe.subIngre.push({
+        id: ingreId,
+        name: '',
+        amount: '',
+        ingreType: 'sub'
+    })
+    renderIngre('sub')
+})
+
+
+
+
+

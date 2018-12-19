@@ -21,3 +21,12 @@ a {
 .recipe-edit {
     color: orangered;
 }
+
+
+span {
+    margin-right: .5rem;
+}
+
+a {
+    margin: 0 .5rem;
+}
