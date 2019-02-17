@@ -1,8 +1,9 @@
 import { getData } from './recipe'
-import { getFilterIngre, getFilterType } from './filters'
+import { getFilterIngre, getFilterType, editFilter } from './filters'
 
 const recipes = getData()
 
+// STEP 3 - renderRecipe 실행 중 filterRecipe 자료 추출 다음에 실행되는 '돔 제작'
 const getRecipeDOM = (recipe) => {
     const recipeLi = document.createElement('li')
     const recipeA = document.createElement('a')
@@ -31,6 +32,7 @@ const getRecipeDOM = (recipe) => {
 
     // Match Score
     const matchScoreEl = document.createElement('span')
+    // Helping message only when the matchRate is not zero. (So, initial page load -> No helping message)
     if(recipe.matchRate !== 0) {
         if (recipe.matchRate >= 80) {
             matchScoreEl.textContent = 'Perfect Match!'
@@ -67,33 +69,36 @@ const getRecipeDOM = (recipe) => {
     return recipeLi
 }
 
+// STEP 2
 const filterRecipe = () => {
-    const filterIngre = getFilterIngre()
-    const filterType = getFilterType()
+    const filterIngre = getFilterIngre() // Ingredient 오브젝트 state 모음 Array
+    const filterType = getFilterType()  // Type 정보 state 따라가는 object
 
-    const chosenIngres = [] //eg. ['beef', 'pork']
+    // Collecting chosen ingredients' names
+    const chosenIngres = [] //eg. ['beef']
     filterIngre.forEach((ingre) => {
         if (ingre.chosen === true) {
-            chosenIngres.push(ingre.name)
+            chosenIngres.push(ingre.name) // ingre state가 chosen 인것만 'chosenIngres' 대열에 올림
         }
     })
 
+    // 다음은 모든레피시들 하나씩을 들여다보고 하는 작업들임
     const filteredRecipes = recipes.filter((oneRecipe) => {
 
         // Main Ingredients Array
-        let mainIngresInOne = [] //eg. ['beef', 'pork loin']
+        let mainIngresInOne = [] // eg. Josh's Favorite : ['beef', 'rice']
         oneRecipe.mainIngre.forEach((each) => {
             mainIngresInOne.push(each.name)
         })
 
         // Sub Ingredients Array
-        let subIngresInOne = []
+        let subIngresInOne = [] // eg. Josh's Favorite : ['A1 suace']
         oneRecipe.subIngre.forEach((each) => {
             subIngresInOne.push(each.name)
         })
 
         // Main Ingredient (matching each to chosen ingredients)
-        let matchedList = [] //eg. [true, false]
+        let matchedList = [] //eg. beef를 선택했을 경우 Josh's Favorite은 [true, false]를, Bulgogi는 [true, false, false, false]
         chosenIngres.forEach((ingre) => {
             mainIngresInOne.forEach((each) => {
                 each.includes(ingre) ? matchedList.push(true) : matchedList.push(false)
@@ -101,7 +106,7 @@ const filterRecipe = () => {
         })
 
         // Sub Ingredient (matching each to chosen ingredients)
-        let subMatchedList = []
+        let subMatchedList = [] //eg. beef를 선택했을 경우 Tomato Past만 [false, false, true, false, false] 즉 25% sub ingre 매칭률
         chosenIngres.forEach((ingre) => {
             subIngresInOne.forEach((each) => {
                 each.includes(ingre) ? subMatchedList.push(true) : subMatchedList.push(false)
@@ -112,24 +117,32 @@ const filterRecipe = () => {
         let mainMatchedRate = 0
         let subMatchedRate = 0
         if (matchedList.length > 0) {
+                                        // each => each인것은 본인이 true면 살고, false면 자동 제외되게.
             mainMatchedRate = (matchedList.filter(each => each).length / oneRecipe.mainIngre.length) * .8
         }
         if (subMatchedList.length > 0) {
             subMatchedRate = (subMatchedList.filter(each => each).length / oneRecipe.subIngre.length) * .2
         }
         
+        // 각 레시피의 matchRate 프로퍼티에 최종 점수 넣어주기
         oneRecipe.matchRate = (mainMatchedRate + subMatchedRate) * 100
 
+        // --------------재료매치 계산은 모든 레시피 대상으로 이루어지지만, 실제 출력 여부는 여기서부터 판단됨--------------
         // type 판단
         let isTypeMatch = filterType.type === 'any' || filterType.type === oneRecipe.type
-
+        // filterType이 any일 경우에도 통과시켜주고, 본 레시피의 유형과 같아도 통과시켜주고.
 
         // ingre선택 없으면 모두 출력하도록 설정
         if (chosenIngres.length <= 0) {
-            return isTypeMatch
-        } else {
+            return isTypeMatch  // type 매치만 판단기준이 되도록
+        } else {    
+            // true를 포함한 matchedList가 있는 경우 + type이 매치하는 경우
             const match01 = matchedList.includes(true) && isTypeMatch
+
+            // true를 포함한  subMatchedList가 있는 경우 + type이 매치하는 경우
             const match02 = subMatchedList.includes(true) && isTypeMatch
+
+            // 위의 두 가지인 경우를 다 출력하도록
             return match01 || match02
         }
 
@@ -158,15 +171,17 @@ const filterRecipe = () => {
         })
     }
 
-
     return filteredRecipes
 }
 
+// STEP 1
 const renderList = () => {
 
+    // 컨텐츠 박스가 되는 'recipesArea'
     const recipesArea = document.querySelector('#recipesArea')
     recipesArea.innerHTML = ''
-    // recipes가 비었는지 확인한다
+
+    // (필터 사용 관계 없이 일단,) recipes가 비었으면 '결과 없음'을 렌더하고 function 종료.
     if (recipes.length <= 0) {
         const noResultEl = document.createElement('p')
         noResultEl.textContent = 'No result'
@@ -174,10 +189,10 @@ const renderList = () => {
         return  
     }
 
-    // recipes를 필터링해온다
+    // recipes를 필터링해온다 (-> STEP.2)
     const filteredRecipes = filterRecipe()
 
-    // recipes를 DOM으로 출력한다.
+    // recipes를 DOM으로 출력한다. (-> STEP.3)
     if (filteredRecipes.length > 0) {
         filteredRecipes.forEach((recipe) => {
             return recipesArea.appendChild(getRecipeDOM(recipe))
