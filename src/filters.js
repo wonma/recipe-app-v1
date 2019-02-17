@@ -32,54 +32,86 @@ const editFilter = {
     state: 'off'
 }
 
-// Add Ingre Filter feature
-const addIngre = () => {
+const getIngreDOM = (ingreName, editState) => {
+    const ingreForm = document.createElement('form')
 
-    // 새로운 Form을 생성한다 (input field와 '+' button을 포함한)
-    const newFilterIngre = document.createElement('form')
-    newFilterIngre.setAttribute('id', 'newIngreForm')
-    const newIngreInput = document.createElement('input')
-    newIngreInput.setAttribute('name', 'newIngre')
-    const filterIngreArea = document.querySelector('#ingredients')
-    const newIngreBtn = document.createElement('button')
-    newIngreBtn.textContent = '+'
-
-    // submit 누르면 fitlerIngre 데이터박스에 push됨
-    newFilterIngre.addEventListener('submit', (e) => {
-        e.preventDefault()
-        const newIngreName = e.target.elements.newIngre.value.toLowerCase()
-        filterIngre.push({
-            name: newIngreName,
-            chosen: true
-        })
-
-        // submit후 리스트 올라갈 '체크박스 + 이름' 셋트 만들기
+    if(editState === 'off') {
+        // submit후 리스트 올라갈 '체크박스' 만들기
         const createdIngre = document.createElement('input')
         createdIngre.setAttribute('type', 'checkbox')
-        createdIngre.setAttribute('checked', 'checked')
-        createdIngre.setAttribute('id', newIngreName)
+        createdIngre.setAttribute('id', ingreName)
         createdIngre.setAttribute('name', 'foodType')
-        createdIngre.setAttribute('value', newIngreName)
+        createdIngre.setAttribute('value', ingreName)
 
+        // 체크박스와 연결된 label만들기
         const newLabel = document.createElement('label')
-        newLabel.setAttribute('for', newIngreName)
-        newLabel.textContent = newIngreName.charAt(0).toUpperCase() + newIngreName.slice(1);
+        newLabel.setAttribute('for', ingreName)
+        newLabel.textContent = ingreName.charAt(0).toUpperCase() + ingreName.slice(1);
 
-        filterIngreArea.appendChild(createdIngre)
-        filterIngreArea.appendChild(newLabel)
+        // 두 요소 합쳐서 return
+        ingreForm.appendChild(createdIngre)
+        ingreForm.appendChild(newLabel)
 
-        newIngreForm.remove()
-        renderList()
-    })
+    } else if (editState === 'on') {
+        // 체크박스와 연결된 label만들기
+        const newLabel = document.createElement('label')
+        newLabel.setAttribute('for', ingreName)
+        newLabel.textContent = ingreName.charAt(0).toUpperCase() + ingreName.slice(1)
 
-    newFilterIngre.appendChild(newIngreInput)
-    newFilterIngre.appendChild(newIngreBtn)
-    filterIngreArea.appendChild(newFilterIngre)
+        // delete 버튼
+        const deleteIngreBtn = document.createElement('button')
+        deleteIngreBtn.setAttribute('name', ingreName)
+        deleteIngreBtn.textContent = '-'
+        deleteIngreBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            const ingreIndex = filterIngre.findIndex((ingre) => {
+                return ingre.name === e.target.name
+            })
+            filterIngre.splice(ingreIndex, 1)
+            renderIngreFilter(editFilter.state)
+        })     
+        ingreForm.appendChild(newLabel)
+        ingreForm.appendChild(deleteIngreBtn)
+    }
+    
+    return ingreForm
 }
 
+// Render Ingre Filter
+const renderIngreFilter = (editState) => {
+    const ingreArea = document.querySelector('#ingreArea')
+    ingreArea.innerHTML = ''
+
+    filterIngre.forEach((ingre) => {
+        return ingreArea.appendChild(getIngreDOM(ingre.name, editState))
+    })
+
+    const newIngreForm = document.querySelector('#newIngreForm')
+
+    if (editState === 'on') {
+        newIngreForm.classList.remove('isEditOff')
+    } else if (editState === 'off') {
+        newIngreForm.classList.add('isEditOff')
+    }
+}
+
+
+// submit 누르면 fitlerIngre 데이터박스에 push됨
+const newFilterIngre = document.querySelector('#newIngreForm')
+const newIngreInput = document.querySelector('#newIngreInput')
+newFilterIngre.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const newIngreName = e.target.elements.newIngre.value.toLowerCase()
+    filterIngre.push({
+        name: newIngreName,
+        chosen: false
+    })
+    newIngreInput.value = ''
+    renderIngreFilter(editFilter.state)
+})
 
 
 const getFilterIngre = () => filterIngre
 const getFilterType = () => filterType
 
-export { getFilterIngre, getFilterType, addIngre, editFilter }
+export { getFilterIngre, getFilterType, renderIngreFilter, editFilter }

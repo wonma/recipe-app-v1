@@ -1,8 +1,8 @@
 import { renderList } from './view'
-import { getFilterIngre, getFilterType, addIngre } from './filters'
+import { getFilterIngre, getFilterType, renderIngreFilter, editFilter } from './filters'
 import { createRecipe } from './recipe'
 
-
+renderIngreFilter(editFilter.state)
 renderList()
 
 fetch('http://localhost:3000/', {
@@ -27,19 +27,31 @@ fetch('http://localhost:3000/', {
     })
     .catch(err => console.log('Failed to fetch')) 
 
+// ingre filter 존재하면 renderIngre하고 아니면 'No Ingredient to filter' 메세지 띄우기
 
-// Added ingredient filter button
+
+// Ingredient filter button
 document.querySelector('#add-ingre').addEventListener('click', (e) => {
-    addIngre()
+    const editFilterBtn = document.querySelector('#add-ingre')
+
+    if (editFilter.state === 'off') {
+        editFilter.state = 'on'
+        editFilterBtn.textContent = 'Editing Done'
+    } else if (editFilter.state === 'on') {
+        editFilter.state = 'off'
+        editFilterBtn.textContent = 'Edit Filter'
+    }
+
+    renderIngreFilter(editFilter.state)
 })
 
-// Added creating new recipe button
+// Creating new recipe button
 document.querySelector('#add-new').addEventListener('click', (e) => {
     const id = createRecipe()
     location.assign(`/edit.html#${id}`)
 })
 
-// Re-render with filtered ingredients checked
+// Re-render with ingredients to filter checked
 document.querySelector('#ingredients').addEventListener('change', (e)=> {
     const filterIngre = getFilterIngre()
     filterIngre.forEach((ingre) => {
@@ -50,6 +62,7 @@ document.querySelector('#ingredients').addEventListener('change', (e)=> {
     renderList()
 })
 
+// Re-render with food type filter checked
 document.querySelector('#foodType').addEventListener('change', (e) => {
     const filterType = getFilterType()
     filterType.type = e.target.value

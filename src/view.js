@@ -80,7 +80,9 @@ const filterRecipe = () => {
         if (ingre.chosen === true) {
             chosenIngres.push(ingre.name) // ingre state가 chosen 인것만 'chosenIngres' 대열에 올림
         }
+
     })
+    console.log(chosenIngres)
 
     // 다음은 모든레피시들 하나씩을 들여다보고 하는 작업들임
     const filteredRecipes = recipes.filter((oneRecipe) => {

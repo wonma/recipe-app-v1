@@ -58,7 +58,7 @@ const generateIngreDOM = (ingre, type) => {
     const amountEl = document.createElement('input')
     const removeEl = document.createElement('button')
     
-    nameEl.value = ingre.name
+    nameEl.value = ingre.name.toLowerCase()
     amountEl.value = ingre.amount
     removeEl.textContent = 'x'
 
@@ -139,7 +139,7 @@ document.querySelector('#addMainIngre').addEventListener('click', () => {
     renderIngre('main')
 })
 
-// Main Ingredient 'Add' Button
+// Sub Ingredient 'Add' Button
 document.querySelector('#addSubIngre').addEventListener('click', () => {
     const ingreId = uuidv4()
     theRecipe.subIngre.push({

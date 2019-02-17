@@ -22,6 +22,10 @@ a {
     color: orangered;
 }
 
+.isEditOff {
+    display: none;
+    /* visibility: hidden; */
+}
 
 span {
     margin-right: .5rem;
