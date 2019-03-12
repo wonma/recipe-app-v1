@@ -1,19 +1,21 @@
 import { renderList } from './view'
 import { getFilterIngre, getFilterType, renderIngreFilter, editFilter } from './filters'
 import { createRecipe } from './recipe'
-import { getUser } from './index'
+// import { getUser } from './index'
 
-const fetchedUser = getUser()
-console.log(fetchedUser)
+// const fetchedUser = getUser()
+// console.log(fetchedUser)
 
-fetch('http://localhost:3000/main', {
+fetch('http://localhost:3000/recipes', {
     method: 'get',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        email: fetchedUser.email
+    headers: { 'Content-Type': 'application/json' }
+    // how x-auth is passed over to a new route(GET /recipes) after a request to the login route succeeded resulting in response header of x-auth set?
+})
+.then(response => response.json())
+.then((recipes) => {
+        console.log(recipes)
     })
-}).then(response => response.json())
-    .catch(err => console.log('Failed to fetch')) 
+.catch(err => console.log('Failed to fetch')) 
 
 // ingre filter 존재하면 renderIngre하고 아니면 'No Ingredient to filter' 메세지 띄우기
 
