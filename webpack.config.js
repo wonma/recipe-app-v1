@@ -5,9 +5,10 @@ const path = require('path')
 
 module.exports = {
     entry: {
-        index: ['babel-polyfill', './src/index.js'],
+        main: ['babel-polyfill', './src/main.js'],
         edit: ['babel-polyfill', './src/edit.js'],
-        view: ['babel-polyfill', './src/view.js']
+        view: ['babel-polyfill', './src/view.js'],
+        index: ['babel-polyfill', './src/index.js']
     },  
     output: {
         path: path.resolve(__dirname, 'public/scripts'),

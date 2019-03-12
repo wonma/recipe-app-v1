@@ -10,28 +10,15 @@
 </head>
 <body>
     
-    <h1 style="display:inline-block">Recipe App</h1>
-    <button id="add-new">Add new recipe</button>
-    <div id="filterIngreArea"></div>
-    <div id="filterTypeArea">
-            <fieldset id="ingredients">
-                <legend>I have these ingredients<button type="button" id="add-ingre">Edit Filter</button></legend>  
-                <div id="ingreArea"></div>
-                <form id="newIngreForm">
-                    <input id="newIngreInput" name="newIngre" type="text"><button>+</button>
-                </form>
-            </fieldset>
-            
-            <fieldset id="foodType">
-                <legend>Food Type</legend>
-                <input type="radio" id="any" name="foodType" value="any" checked><label for="anyType">Any</label>
-                <input type="radio" id="toppedRice" name="foodType" value="toppedRice"><label for="toppedRice">Topped Rice</label>
-                <input type="radio" id="grilled" name="foodType" value="grilled"><label for="grilled" >Grilled</label>
-                <input type="radio" id="noodles" name="foodType" value="noodles"><label for="noodles">Noodles</label>
-            </fieldset>
-    </div>
-    <h2>Saved Recipes</h2>
-    <div id="recipesArea">  </div>
+    <h1 style="display:inline-block">Login Area</h1>
+
+    <form id="my-form">
+        <label>UserName</label><input id="userName" type="text" name="userName">
+        <label>Email</label><input id="email" type="email" name="email">
+        <label>Password</label><input id="password" type="password" name="password">
+        <button id="go-to-main" type="submit">GO TO MAIN</button>
+    </form>
+    
     <script src="./scripts/index-bundle.js"></script>
 </body>
 </html>

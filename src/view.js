@@ -82,7 +82,6 @@ const filterRecipe = () => {
         }
 
     })
-    console.log(chosenIngres)
 
     // 다음은 모든레피시들 하나씩을 들여다보고 하는 작업들임
     const filteredRecipes = recipes.filter((oneRecipe) => {

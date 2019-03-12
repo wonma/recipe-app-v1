@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Recipe App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/style.css">
+
+</head>
+
+<body>
+
+    <h1 style="display:inline-block">Recipe App</h1>
+    <button id="add-new">Add new recipe</button>
+    <div id="filterIngreArea"></div>
+    <div id="filterTypeArea">
+        <fieldset id="ingredients">
+            <legend>I have these ingredients<button type="button" id="add-ingre">Edit Filter</button></legend>
+            <div id="ingreArea"></div>
+            <form id="newIngreForm">
+                <input id="newIngreInput" name="newIngre" type="text"><button>+</button>
+            </form>
+        </fieldset>
+
+        <fieldset id="foodType">
+            <legend>Food Type</legend>
+            <input type="radio" id="any" name="foodType" value="any" checked><label for="anyType">Any</label>
+            <input type="radio" id="toppedRice" name="foodType" value="toppedRice"><label for="toppedRice">Topped Rice</label>
+            <input type="radio" id="grilled" name="foodType" value="grilled"><label for="grilled">Grilled</label>
+            <input type="radio" id="noodles" name="foodType" value="noodles"><label for="noodles">Noodles</label>
+        </fieldset>
+    </div>
+    <h2>Saved Recipes</h2>
+    <div id="recipesArea"> </div>
+    <script src="./scripts/main-bundle.js"></script>
+</body>
+
+</html>
