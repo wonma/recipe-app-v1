@@ -1,27 +1,4 @@
-import { renderList } from "./view";
-
-// Ingredient 오브젝트 state 모음 Array
-const filterIngre = [
-    {
-        name: 'beef',
-        chosen: false
-    },    {
-        name: 'pork',
-        chosen: false
-    },    {
-        name: 'chicken',
-        chosen: false
-    },    {
-        name: 'tomato',
-        chosen: false
-    },    {
-        name: 'egg',
-        chosen: false
-    },    {
-        name: 'potato',
-        chosen: false
-    }
-]
+let filterIngre = []
 
 // Type 정보 state 따라가는 오브젝트
 const filterType = {
@@ -79,6 +56,8 @@ const getIngreDOM = (ingreName, editState) => {
 
 // Render Ingre Filter
 const renderIngreFilter = (editState) => {
+    filterIngre = getFilterIngre()
+
     const ingreArea = document.querySelector('#ingreArea')
     ingreArea.innerHTML = ''
 
@@ -111,7 +90,10 @@ newFilterIngre.addEventListener('submit', (e) => {
 })
 
 
-const getFilterIngre = () => filterIngre
+// const getFilterIngre = () => filterIngre
+const getFilterIngre = () => {
+    return JSON.parse(localStorage.getItem('filterIngre'))
+}
 const getFilterType = () => filterType
 
 export { getFilterIngre, getFilterType, renderIngreFilter, editFilter }

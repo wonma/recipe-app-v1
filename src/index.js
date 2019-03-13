@@ -19,11 +19,18 @@ document.querySelector('#my-form').addEventListener('submit', (e) => {
             email: email.value,
             password: password.value
         })
-    }).then(response => response.json())
-        .then(user => {
-            if (user._id) {
-                location.assign(`/main.html`)
-            }
+    }).then(response => {
+        return response.json()
+    })
+        .then(tokenObj => {
+            localStorage.removeItem('x-auth')
+            localStorage.setItem('x-auth', tokenObj.token)
+            localStorage.setItem('user', tokenObj.user.name)
+            const filterIngre = tokenObj.user.filterIngre.map((ingre) => {
+                return {'name': ingre, 'chosen': false}
+            })
+            localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+            location.assign(`/main.html`)
         })
         .catch(err => { console.log('unable to login') })
 })

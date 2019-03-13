@@ -1,7 +1,10 @@
 import { getData } from './recipe'
 import { getFilterIngre, getFilterType, editFilter } from './filters'
 
-const recipes = getData()
+// const recipes = getData() // array로 되어있음
+
+
+// console.log(recipes)
 
 // STEP 3 - renderRecipe 실행 중 filterRecipe 자료 추출 다음에 실행되는 '돔 제작'
 const getRecipeDOM = (recipe) => {
@@ -21,7 +24,7 @@ const getRecipeDOM = (recipe) => {
     const editEl = document.createElement('a')
     editEl.textContent = 'edit'
     editEl.classList.add('recipe-edit')
-    editEl.setAttribute('href', `/edit.html#${recipe.id}`)
+    editEl.setAttribute('href', `/edit.html#${recipe._id}`)
     recipeA.appendChild(editEl)
 
 
@@ -70,7 +73,7 @@ const getRecipeDOM = (recipe) => {
 }
 
 // STEP 2
-const filterRecipe = () => {
+const filterRecipe = (recipes) => {
     const filterIngre = getFilterIngre() // Ingredient 오브젝트 state 모음 Array
     const filterType = getFilterType()  // Type 정보 state 따라가는 object
 
@@ -80,9 +83,7 @@ const filterRecipe = () => {
         if (ingre.chosen === true) {
             chosenIngres.push(ingre.name) // ingre state가 chosen 인것만 'chosenIngres' 대열에 올림
         }
-
     })
-
     // 다음은 모든레피시들 하나씩을 들여다보고 하는 작업들임
     const filteredRecipes = recipes.filter((oneRecipe) => {
 
@@ -91,7 +92,6 @@ const filterRecipe = () => {
         oneRecipe.mainIngre.forEach((each) => {
             mainIngresInOne.push(each.name)
         })
-
         // Sub Ingredients Array
         let subIngresInOne = [] // eg. Josh's Favorite : ['A1 suace']
         oneRecipe.subIngre.forEach((each) => {
@@ -105,6 +105,9 @@ const filterRecipe = () => {
                 each.includes(ingre) ? matchedList.push(true) : matchedList.push(false)
             })
         })
+        console.log(mainIngresInOne)
+        console.log(chosenIngres)
+        console.log(matchedList)
 
         // Sub Ingredient (matching each to chosen ingredients)
         let subMatchedList = [] //eg. beef를 선택했을 경우 Tomato Past만 [false, false, true, false, false] 즉 25% sub ingre 매칭률
@@ -176,24 +179,22 @@ const filterRecipe = () => {
 }
 
 // STEP 1
-const renderList = () => {
-
+const renderList = (recipes) => {
     // 컨텐츠 박스가 되는 'recipesArea'
     const recipesArea = document.querySelector('#recipesArea')
     recipesArea.innerHTML = ''
 
     // (필터 사용 관계 없이 일단,) recipes가 비었으면 '결과 없음'을 렌더하고 function 종료.
+    // console.log(recipes)
     if (recipes.length <= 0) {
         const noResultEl = document.createElement('p')
         noResultEl.textContent = 'No result'
-        recipesArea.appendChild(noResultEl)    
+        recipesArea.appendChild(noResultEl) 
         return  
     }
-
     // recipes를 필터링해온다 (-> STEP.2)
-    const filteredRecipes = filterRecipe()
-
-    // recipes를 DOM으로 출력한다. (-> STEP.3)
+    const filteredRecipes = filterRecipe(recipes)
+    console.log(filteredRecipes.length)
     if (filteredRecipes.length > 0) {
         filteredRecipes.forEach((recipe) => {
             return recipesArea.appendChild(getRecipeDOM(recipe))
