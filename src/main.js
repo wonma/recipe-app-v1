@@ -57,12 +57,28 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
     if (editFilter.state === 'off') {
         editFilter.state = 'on'
         editFilterBtn.textContent = 'Editing Done'
+        renderIngreFilter(editFilter.state)
     } else if (editFilter.state === 'on') {
         editFilter.state = 'off'
         editFilterBtn.textContent = 'Edit Filter'
-    }
 
-    renderIngreFilter(editFilter.state)
+        fetch('http://localhost:3000/users/me/ingres', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth': token
+            },
+            body: JSON.stringify({ filterIngre: JSON.parse(localStorage.getItem('filterIngre'))})
+        })
+            .then(response => response.json())
+            .then((filterIngre) => {
+                console.log(filterIngre)
+                renderIngreFilter(editFilter.state)
+            })
+            .catch((e) => {
+                console.log('Error from front')
+            })
+    }
 })
 
 

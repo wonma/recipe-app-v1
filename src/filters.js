@@ -45,6 +45,7 @@ const getIngreDOM = (ingreName, editState) => {
                 return ingre.name === e.target.name
             })
             filterIngre.splice(ingreIndex, 1)
+            localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
             renderIngreFilter(editFilter.state)
         })     
         ingreForm.appendChild(newLabel)
@@ -85,6 +86,8 @@ newFilterIngre.addEventListener('submit', (e) => {
         name: newIngreName,
         chosen: false
     })
+    localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+
     newIngreInput.value = ''
     renderIngreFilter(editFilter.state)
 })
