@@ -1,5 +1,5 @@
 import { renderList } from './view'
-import { getFilterIngre, getFilterType, renderIngreFilter, editFilter } from './filters'
+import { getFilterIngre, getFilterType, renderIngreFilter, editFilter, renderTypeFilter, editType, chosenType, pickType } from './filters'
 import { createRecipe } from './recipe'
 
 
@@ -11,6 +11,7 @@ document.querySelector('#username').textContent = username
 
 
 renderIngreFilter(editFilter.state)
+renderTypeFilter(editType.state)
 
 const token = localStorage.getItem('x-auth')
 
@@ -42,10 +43,13 @@ fetch('http://localhost:3000/recipes', {
 
         // Re-render with food type filter checked
         document.querySelector('#foodType').addEventListener('change', (e) => {
-            const filterType = getFilterType()
-            filterType.type = e.target.value
+            // const filterType = getFilterType()
+            pickType(e.target.value)
+            renderTypeFilter(editFilter.state)
             renderList(recipes)
         })
+
+
 
     })
     .catch(err => console.log('Failed to fetch')) 
@@ -81,6 +85,36 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
     }
 })
 
+// Type filter button
+document.querySelector('#add-type').addEventListener('click', (e) => {
+    const editTypeBtn = document.querySelector('#add-type')
+
+    if (editType.state === 'off') {
+        editType.state = 'on'
+        editTypeBtn.textContent = 'Editing Done'
+        renderTypeFilter(editType.state)
+    } else if (editType.state === 'on') {
+        editType.state = 'off'
+        editTypeBtn.textContent = 'Edit Type'
+        renderTypeFilter(editFilter.state)
+        // fetch('http://localhost:3000/users/me/ingres', {
+        //     method: 'post',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'x-auth': token
+        //     },
+        //     body: JSON.stringify({ filterIngre: JSON.parse(localStorage.getItem('filterIngre')) })
+        // })
+        //     .then(response => response.json())
+        //     .then((filterIngre) => {
+        //         console.log(filterIngre)
+        //         renderIngreFilter(editFilter.state)
+        //     })
+        //     .catch((e) => {
+        //         console.log('Error from front')
+        //     })
+    }
+})
 
 
 

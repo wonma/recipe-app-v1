@@ -1,5 +1,5 @@
 import { getData } from './recipe'
-import { getFilterIngre, getFilterType, editFilter } from './filters'
+import { getFilterIngre, getFilterType, chosenType } from './filters'
 
 // const recipes = getData() // array로 되어있음
 
@@ -44,7 +44,7 @@ const getRecipeDOM = (recipe) => {
         } else if (recipe.matchRate >= 20) {
             matchScoreEl.textContent = 'Not a bad Match!'
         } else {
-            matchScoreEl.textContent = 'Need to go for a grocery shopping!'
+            matchScoreEl.textContent = 'Go grocery shopping!'
         }
     }
     recipeA.appendChild(matchScoreEl)
@@ -133,7 +133,7 @@ const filterRecipe = (recipes) => {
 
         // --------------재료매치 계산은 모든 레시피 대상으로 이루어지지만, 실제 출력 여부는 여기서부터 판단됨--------------
         // type 판단
-        let isTypeMatch = filterType.type === 'any' || filterType.type === oneRecipe.type
+        let isTypeMatch = chosenType.type === 'any' || chosenType.type === oneRecipe.type
         // filterType이 any일 경우에도 통과시켜주고, 본 레시피의 유형과 같아도 통과시켜주고.
 
         // ingre선택 없으면 모두 출력하도록 설정
