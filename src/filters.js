@@ -1,9 +1,5 @@
 let filterIngre = []
-
-// Type 정보 state 따라가는 오브젝트
-// const filterType = {
-//     type: 'any'
-// }
+let filterTypes = []
 
 const editFilter = {
     state: 'off'
@@ -13,25 +9,15 @@ const editType = {
     state: 'off'
 }
 
-const filterTypes = [
-    {
-        name: 'any',
-        chosen: true
-    }, {
-        name: 'topped-rice',
-        chosen: false
-    }, {
-        name: 'grilled',
-        chosen: false
-    }, {
-        name: 'noodles',
-        chosen: false
-    }
-    
-]
-
 const chosenType = {
     type: 'any'
+}
+
+const getFilterIngre = () => {
+    return JSON.parse(localStorage.getItem('filterIngre'))
+}
+const getFilterType = () => {
+    return JSON.parse(localStorage.getItem('filterTypes'))
 }
 
 const pickType = (chosenName) => {
@@ -170,7 +156,7 @@ const renderIngreFilter = (editState) => {
 
 // Render Type Filter
 const renderTypeFilter = (editState) => {
-    // const filterTypes = getFilterType()
+    filterTypes = getFilterType()
 
     const typeArea = document.querySelector('#typeArea')
     typeArea.innerHTML = ''
@@ -195,15 +181,22 @@ const newFilterIngre = document.querySelector('#newIngreForm')
 const newIngreInput = document.querySelector('#newIngreInput')
 newFilterIngre.addEventListener('submit', (e) => {
     e.preventDefault()
-    const newIngreName = e.target.elements.newIngre.value.toLowerCase()
-    filterIngre.push({
-        name: newIngreName,
-        chosen: false
-    })
-    localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
 
-    newIngreInput.value = ''
-    renderIngreFilter(editFilter.state)
+    const inputText = e.target.elements.newIngre.value.trim()
+
+    if(inputText.length > 0) {
+        const newIngreName = inputText.toLowerCase()
+        filterIngre.push({
+            name: newIngreName,
+            chosen: false
+        })
+        localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+
+        newIngreInput.value = ''
+        renderIngreFilter(editFilter.state)
+    } else {
+        // 경고문 띄우는거 작업해야함
+    }
 })
 
 // Adding New Filter Type 
@@ -212,22 +205,22 @@ const newTypeInput = document.querySelector('#newTypeInput')
 newTypeForm.addEventListener('submit', (e) => {
     e.preventDefault()
     const newTypeName = e.target.elements.newType.value.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
-    filterTypes.push({
-        name: newTypeName,
-        chosen: false
-    })
-    localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
+    if (newTypeName.length > 0) {
+        filterTypes.push({
+            name: newTypeName,
+            chosen: false
+        })
+        localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
+        newTypeInput.value = ''
+        renderTypeFilter(editType.state)
+    } else {
+        // 경고문 띄우는거 해야함
+    }
 
-    newTypeInput.value = ''
-    renderTypeFilter(editType.state)
+
+
 })
 
-
-// const getFilterIngre = () => filterIngre
-const getFilterIngre = () => {
-    return JSON.parse(localStorage.getItem('filterIngre'))
-}
-const getFilterType = () => filterTypes
 
 export {renderIngreFilter, editFilter, getFilterIngre, getFilterType, 
         renderTypeFilter, editType, pickType, chosenType }

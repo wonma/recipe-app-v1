@@ -22,14 +22,23 @@ document.querySelector('#my-form').addEventListener('submit', (e) => {
     }).then(response => {
         return response.json()
     })
-        .then(tokenObj => {
+        .then(loginInfo => {
             localStorage.removeItem('x-auth')
-            localStorage.setItem('x-auth', tokenObj.token)
-            localStorage.setItem('user', tokenObj.user.name)
-            const filterIngre = tokenObj.user.filterIngre.map((ingre) => {
+            localStorage.setItem('x-auth', loginInfo.token)
+            localStorage.setItem('user', loginInfo.user.name)
+
+            // Populate localStroage key 'filterIngre'
+            const filterIngre = loginInfo.user.filterIngre.map((ingre) => {
                 return {'name': ingre, 'chosen': false}
             })
             localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+
+            // Populate localStroage key 'filterType'
+            const filterType = loginInfo.user.filterType.map((type) => {
+                return type === 'any' ? {'name': type, 'chosen': true} : { 'name': type, 'chosen': false}
+            })
+            localStorage.setItem('filterTypes', JSON.stringify(filterType))
+
             location.assign(`/main.html`)
         })
         .catch(err => { console.log('unable to login') })

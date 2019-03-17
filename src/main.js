@@ -97,29 +97,27 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
         editType.state = 'off'
         editTypeBtn.textContent = 'Edit Type'
         renderTypeFilter(editFilter.state)
-        // fetch('http://localhost:3000/users/me/ingres', {
-        //     method: 'post',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'x-auth': token
-        //     },
-        //     body: JSON.stringify({ filterIngre: JSON.parse(localStorage.getItem('filterIngre')) })
-        // })
-        //     .then(response => response.json())
-        //     .then((filterIngre) => {
-        //         console.log(filterIngre)
-        //         renderIngreFilter(editFilter.state)
-        //     })
-        //     .catch((e) => {
-        //         console.log('Error from front')
-        //     })
+        fetch('http://localhost:3000/users/me/types', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth': token
+            },
+            body: JSON.stringify({ filterTypes: JSON.parse(localStorage.getItem('filterTypes')) })
+        })
+            .then(response => response.json())
+            .then((filterType) => {
+                renderIngreFilter(editFilter.state)
+            })
+            .catch((e) => {
+                console.log('Error from front')
+            })
     }
 })
 
 
 
-// // Creating new recipe button
-// document.querySelector('#add-new').addEventListener('click', (e) => {
-//     const id = createRecipe()
-//     location.assign(`/edit.html#${id}`)
-// })
+// Creating new recipe button
+document.querySelector('#add-new').addEventListener('click', (e) => {
+    location.assign(`/edit.html`)
+})
