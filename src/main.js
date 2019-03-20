@@ -1,7 +1,11 @@
 import { renderList } from './view'
-import { getFilterIngre, getFilterType, renderIngreFilter, editFilter, renderTypeFilter, editType, chosenType, pickType } from './filters'
-import { createRecipe } from './recipe'
+import { getFilterIngre, renderIngreFilter, editFilter, renderTypeFilter, editType, pickType } from './filters'
 
+const token = localStorage.getItem('x-auth')
+
+if(!token) {
+    location.assign('index.html')
+}
 
 const username = localStorage.getItem('user')
 document.querySelector('#username').textContent = username
@@ -13,7 +17,7 @@ document.querySelector('#username').textContent = username
 renderIngreFilter(editFilter.state)
 renderTypeFilter(editType.state)
 
-const token = localStorage.getItem('x-auth')
+
 
 fetch('http://localhost:3000/recipes', {
     method: 'get',
@@ -115,6 +119,21 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
     }
 })
 
+// Log out 
+document.querySelector('#logout').addEventListener('click', (e) => {
+    fetch('http://localhost:3000/users/me/token', {
+        method: 'delete',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth': token
+        }
+    })
+        .then(response => {
+            localStorage.clear()
+            location.assign(`/index.html`)
+            
+        })
+})
 
 
 // Creating new recipe button

@@ -11,7 +11,7 @@ const getRecipeDOM = (recipe) => {
     const recipeLi = document.createElement('li')
     const recipeA = document.createElement('a')
     recipeA.classList.add('recipe-link')
-    recipeA.setAttribute('href', `/recipe.html#${recipe.id}`)
+    recipeA.setAttribute('href', `/recipe.html#${recipe._id}`) // 보는 링크
     recipeLi.appendChild(recipeA)
 
     // Title
@@ -24,7 +24,7 @@ const getRecipeDOM = (recipe) => {
     const editEl = document.createElement('a')
     editEl.textContent = 'edit'
     editEl.classList.add('recipe-edit')
-    editEl.setAttribute('href', `/edit.html#${recipe._id}`)
+    editEl.setAttribute('href', `/edit.html#${recipe._id}`) // 수정하는 링크
     recipeA.appendChild(editEl)
 
 

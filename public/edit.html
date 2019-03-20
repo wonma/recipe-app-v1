@@ -6,7 +6,12 @@
     <title>Edit page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles/style.css">
-
+    <script>
+        const token = localStorage.getItem('x-auth')
+        if (!token) {
+            location.assign('index.html')
+        }
+    </script>
 </head>
 <body>
     <h2>This is edit page.</h2>
@@ -45,6 +50,7 @@
         
         <button type="button" id="edit-delete">Delete</button>
         <button type="submit">Save</button>
+        <button type="button" id="edit-cancel">Cancel</button>
     </form>
 
 

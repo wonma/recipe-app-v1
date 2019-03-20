@@ -7,13 +7,25 @@
     <title>Recipe page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles/style.css">
-
+    <script>
+        const token = localStorage.getItem('x-auth')
+        if (!token) {
+            location.assign('index.html')
+        }
+    </script>
 </head>
 
 <body>
-    This is recipe view page.
+    <h2>This is View page.</h2>
+    <h3 id="viewTitle"></h3>
+    <p>Type: <span id="viewType"></span> </p>
+    <p>Serving: <span id="viewServing"></span> </p>
+    <div id="mainIngreArea"></div>
+    <div id="subIngreArea"></div>
+    <p id="viewBody"></p>
 
-    <script src="index.js"></script>
+    <a href="/main.html">to main</a>
+    <script src="./scripts/recipe-bundle.js"></script>
 </body>
 
 </html>

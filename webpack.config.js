@@ -8,7 +8,8 @@ module.exports = {
         main: ['babel-polyfill', './src/main.js'],
         edit: ['babel-polyfill', './src/edit.js'],
         view: ['babel-polyfill', './src/view.js'],
-        index: ['babel-polyfill', './src/index.js']
+        index: ['babel-polyfill', './src/index.js'],
+        recipe: ['babel-polyfill', './src/recipe.js']
     },  
     output: {
         path: path.resolve(__dirname, 'public/scripts'),

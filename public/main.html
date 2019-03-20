@@ -7,12 +7,18 @@
     <title>Recipe App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles/style.css">
-
+    <script>
+        const token = localStorage.getItem('x-auth')
+            if (!token) {
+                location.assign('index.html')
+            }
+    </script>
 </head>
 
 <body>
 
     <h1 style="display:inline-block">Recipe App</h1>
+    <a href="#" id="logout">Log out</a>
     <p class="greeting">Welcome, <span id="username"></span>!</p>
     <button id="add-new">Add new recipe</button>
     <div id="filterIngreArea"></div>
@@ -20,7 +26,7 @@
         <fieldset id="ingredients">
             <legend>I have these ingredients<button type="button" id="add-ingre">Edit Filter</button></legend>
             <div id="ingreArea"></div>
-            <form id="newIngreForm">
+            <form id="newIngreForm" class="newIngreForm">
                 <input id="newIngreInput" class="newIngreInput" name="newIngre" type="text"><button>+</button>
             </form>
         </fieldset>

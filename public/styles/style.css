@@ -27,6 +27,15 @@ a {
     /* visibility: hidden; */
 }
 
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.r-register-btn {
+    width: 10rem;
+}
+
 span {
     margin-right: .5rem;
 }

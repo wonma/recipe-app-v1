@@ -4,9 +4,11 @@ import uuidv4 from 'uuid/v4'
 
 // const recipes = getData()
 const recipeID = location.hash.substring(1)
-// const theRecipe = recipes.find((recipe) => recipe.id === recipeID)
+// const theIngres = recipes.find((recipe) => recipe.id === recipeID)
 
+let theIngres;
 let theRecipe;
+
 const token = localStorage.getItem('x-auth')
 
 let pageMode = 'createMode'
@@ -25,6 +27,7 @@ const getTypeDOM = (typeName) => {
     createdType.setAttribute('id', typeName)
     createdType.setAttribute('name', 'foodType')
     createdType.setAttribute('value', typeName)
+    createdType.classList.add('foodType')
 
     // 체크박스와 연결된 label만들기
     const newLabel = document.createElement('label')
@@ -47,6 +50,184 @@ const renderTypeFilter = () => {
         return editType.appendChild(getTypeDOM(type.name))
     })
 }
+
+
+// Initiating 'Main Ingre' (DOM)
+const generateIngreDOM = (ingre, type) => {
+
+    const ingreDiv = document.createElement('div')
+    const nameEl = document.createElement('input')
+    const amountEl = document.createElement('input')
+    const removeEl = document.createElement('button')
+
+    nameEl.value = ingre.name.toLowerCase()
+    amountEl.value = ingre.amount
+    removeEl.textContent = 'x'
+    nameEl.setAttribute('placeholder', 'name')
+    // nameEl.setAttribute('id', `${type}Ingre-`)
+    amountEl.setAttribute('placeholder', 'amount')
+
+    nameEl.addEventListener('change', (e) => {
+        console.log(e)
+    })
+    
+
+    // Input Event Handler
+    nameEl.addEventListener('input', (e) => {
+        type === 'main' ? theIngres.mainIngre = [] : theIngres.subIngre = []
+        Array.from(document.querySelector(`#${type}IngreArea`).children).forEach((each) => {
+            const name = each.children[0].value
+            const amount = each.children[1].value
+            type === 'main' ? theIngres.mainIngre.push({name, amount})
+                : theIngres.subIngre.push({ name, amount })
+        })
+        localStorage.setItem(`${type}Ingre`, JSON.stringify(theIngres[`${type}Ingre`]))
+    })
+    amountEl.addEventListener('input', (e) => {
+        type === 'main' ? theIngres.mainIngre = [] : theIngres.subIngre = []
+        Array.from(document.querySelector(`#${type}IngreArea`).children).forEach((each) => {
+            const name = each.children[0].value
+            const amount = each.children[1].value
+            type === 'main' ? theIngres.mainIngre.push({ name, amount })
+                : theIngres.subIngre.push({ name, amount })
+        })
+        localStorage.setItem(`${type}Ingre`, JSON.stringify(theIngres[`${type}Ingre`]))
+    })
+
+    // Remove functionality
+    if (type === 'main') {
+        removeEl.addEventListener('click', () => {
+            const ingreIndex = theIngres.mainIngre.findIndex((each) => each.id === ingre.id)
+            theIngres.mainIngre.splice(ingreIndex, 1)
+
+            renderIngre('main')
+        })
+    } else if (type === 'sub') {
+        removeEl.addEventListener('click', () => {
+            const ingreIndex = theIngres.subIngre.findIndex((each) => each.id === ingre.id)
+            theIngres.subIngre.splice(ingreIndex, 1)
+
+            renderIngre('sub')
+        })
+    }
+
+    ingreDiv.appendChild(nameEl)
+    ingreDiv.appendChild(amountEl)
+    ingreDiv.appendChild(removeEl)
+    return ingreDiv
+}
+
+// Initiating 'Main Ingre' (Render)
+const renderIngre = (type) => {
+
+    const ingreArea = document.querySelector(`#${type}IngreArea`)
+    ingreArea.innerHTML = ''
+    // theIngres.mainIngre : theIngres.subIngre
+    let ingreArray = type === 'main' ? theIngres.mainIngre : theIngres.subIngre
+
+    ingreArray.forEach((obj) => {
+        ingreArea.appendChild(generateIngreDOM(obj, type))
+    })
+
+    type === 'main' ? localStorage.setItem(`${type}Ingre`, JSON.stringify(theIngres.mainIngre))
+        : localStorage.setItem(`${type}Ingre`, JSON.stringify(theIngres.subIngre))
+}
+
+// fetch GET해서 type 정보 받아오기
+renderTypeFilter()
+
+// Initial query from data
+if (recipeID.length > 0) { // hash 있음 (기존 Recipe 편집)
+
+    fetch(`http://localhost:3000/recipes/${recipeID}`, {
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth': token
+        }
+    })
+        .then(response => response.json())
+        .then((res) => {
+            localStorage.setItem('mainIngre', JSON.stringify(res.recipe.mainIngre))
+            localStorage.setItem('subIngre', JSON.stringify(res.recipe.subIngre))
+
+            theIngres = {
+                mainIngre: res.recipe.mainIngre,
+                subIngre: res.recipe.subIngre
+            }
+
+            renderIngre('main')
+            renderIngre('sub')
+
+            // Initiating title, type, serving, text body
+            theRecipe = res.recipe 
+
+            // title
+            const editTitle = document.querySelector('#editTitle')
+            editTitle.value = theRecipe.title
+
+            // type
+            const editType = document.querySelectorAll('.foodType')
+            Object.values(editType).forEach((each) => {
+                if (each.value === theRecipe.type) {
+                    document.querySelector(`#${each.id}`).setAttribute('checked', 'checked')
+                }
+            })
+
+            // serving
+            const editServing = document.querySelectorAll('.foodServing')
+            Object.values(editServing).forEach((value) => {
+                if (value.value == theRecipe.serving) {
+                    document.querySelector(`#${value.id}`).setAttribute('selected', 'selected')
+                }
+            })
+
+            // text body
+            const editBody = document.querySelector('#editBody')
+            editBody.value = theRecipe.text
+
+        })
+
+} else {    // hash 없음 (새 Recipe 작성)
+    theIngres = {
+        mainIngre: [{
+            name: '',
+            amount: ''
+        }],
+        subIngre: [{
+            name: '',
+            amount: ''
+        }]
+    }
+    renderIngre('main')
+    renderIngre('sub')
+}
+
+
+// Main Ingredient 'Add' Button
+document.querySelector('#addMainIngre').addEventListener('click', () => {
+    const ingreId = uuidv4()
+    theIngres.mainIngre.push({
+        id: ingreId,
+        name: '',
+        amount: ''
+    })
+    renderIngre('main')
+    localStorage.setItem(`mainIngre`, JSON.stringify(theIngres.mainIngre))
+
+})
+
+// Sub Ingredient 'Add' Button
+document.querySelector('#addSubIngre').addEventListener('click', () => {
+    const ingreId = uuidv4()
+    theIngres.subIngre.push({
+        id: ingreId,
+        name: '',
+        amount: ''
+    })
+    renderIngre('sub')
+    localStorage.setItem(`subIngre`, JSON.stringify(theIngres.subIngre))
+})
 
 
 
@@ -79,6 +260,19 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
                 amount
             })
         })
+
+        Array.from(e.target.children.subIngres.children.subIngreArea.children).forEach((each) => {
+            const name = each.children[0].value
+            const amount = each.children[1].value
+            if (name.length === 0 || amount.length === 0) {
+                throw new Error('The ingre should be full')
+            }
+            body.subIngre.push({
+                name,
+                amount
+            })
+        })
+
 
         if (pageMode === 'createMode') {
             fetch(`http://localhost:3000/recipes/`, {
@@ -116,211 +310,35 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
                     console.log('Hmm fetch failed')
                 })
         }
-        
+
 
     } catch (e) {
         console.log(e)
-    }    
-    // saveData()
-    // location.assign(`/index.html`)
+    }
 })
 
-///////////////////   Button - Save
-// document.querySelector('#edit-form').addEventListener('submit', (e) => {
-//     e.preventDefault()
 
-//     theRecipe.title = e.target.elements.editTitle.value
-//     theRecipe.type = e.target.elements.editType.value
-//     theRecipe.serving = e.target.elements.editServing.value
-//     theRecipe.recipe = e.target.elements.editBody.value
-//     saveData()
-
-//     location.assign(`/index.html`)
-// })
-
-///////////////////    Button - Delete
-// document.querySelector('#edit-delete').addEventListener('click', (e) => {
-//     const theIndex = recipes.findIndex((recipe) => recipe.id === recipeID)
-//     recipes.splice(theIndex, 1)
-//     saveData()
-    
-//     location.assign(`/index.html`)
-// })
-
-
-// Initiating 'Title'
-// const editTitle = document.querySelector('#editTitle')
-// editTitle.value = theRecipe.title
-
-// Initiating 'Type'
-// const editType = document.querySelectorAll('.foodType')
-// Object.values(editType).forEach((each) => {
-//     if (each.value === theRecipe.type) {
-//         document.querySelector(`#${each.id}`).setAttribute('checked', 'checked')
-//     }
-// })
-
-// Initiating 'Serving'
-// const editServing = document.querySelectorAll('.foodServing')
-// Object.values(editServing).forEach((value) => {
-//     if (value.value === theRecipe.serving) {
-//         document.querySelector(`#${value.id}`).setAttribute('selected', 'selected')
-//     }
-// })
-
-// Initiating 'Recipe Body'
-// const editBody = document.querySelector('#editBody')
-// editBody.value = theRecipe.recipe
-
-// Initiating 'Main Ingre' (DOM)
-const generateIngreDOM = (ingre, type) => {
-
-    const ingreDiv = document.createElement('div')
-    const nameEl = document.createElement('input')
-    const amountEl = document.createElement('input')
-    const removeEl = document.createElement('button')
-
-    nameEl.value = ingre.name.toLowerCase()
-    amountEl.value = ingre.amount
-    removeEl.textContent = 'x'
-    nameEl.setAttribute('placeholder', 'name')
-    // nameEl.setAttribute('id', `${type}Ingre-`)
-    amountEl.setAttribute('placeholder', 'amount')
-
-    nameEl.addEventListener('change', (e) => {
-        console.log(e)
-    })
-    
-
-    // Input Event Handler
-    // nameEl.addEventListener('input', (e) => {
-    //     ingre.name = e.target.value
-    //     saveData()
-    // })
-    // amountEl.addEventListener('input', (e) => {
-    //     ingre.amount = e.target.value
-    //     saveData()
-    // })
-
-    // Remove functionality
-    if (type === 'main') {
-        removeEl.addEventListener('click', () => {
-            const ingreIndex = theRecipe.mainIngre.findIndex((each) => each.id === ingre.id)
-            theRecipe.mainIngre.splice(ingreIndex, 1)
-
-            renderIngre('main')
-        })
-    } else if (type === 'sub') {
-        removeEl.addEventListener('click', () => {
-            const ingreIndex = theRecipe.subIngre.findIndex((each) => each.id === ingre.id)
-            theRecipe.subIngre.splice(ingreIndex, 1)
-
-            renderIngre('sub')
-        })
-    }
-
-    ingreDiv.appendChild(nameEl)
-    ingreDiv.appendChild(amountEl)
-    ingreDiv.appendChild(removeEl)
-    return ingreDiv
-}
-
-// Initiating 'Main Ingre' (Render)
-const renderIngre = (type) => {
-
-    const ingreArea = document.querySelector(`#${type}IngreArea`)
-    ingreArea.innerHTML = ''
-    // theRecipe.mainIngre : theRecipe.subIngre
-    let ingreArray = type === 'main' ? theRecipe.mainIngre : theRecipe.subIngre
-
-    // const iterator = ingreArray.entries()
-    // for (let eachIngre of iterator) {
-    //     const index = eachIngre[0]
-    //     const obj = eachIngre[1]
-    //     console.log(index)
-    // }
-    ingreArray.forEach((obj) => {
-        ingreArea.appendChild(generateIngreDOM(obj, type))
-    })
-
-    type === 'main' ? localStorage.setItem(`${type}Ingre`, JSON.stringify(theRecipe.mainIngre))
-        : localStorage.setItem(`${type}Ingre`, JSON.stringify(theRecipe.subIngre))
-    
-    
-
-    // ingreArray.forEach((ingre) => {
-    //     ingreArea.appendChild(generateIngreDOM(ingre, type))
-    // })
-    // saveData()
-}
-
-// fetch GET해서 type 정보 받아오기
-renderTypeFilter()
-
-// hash있을 경우 vs. 없을 경우
-if (recipeID.length > 0) { // hash 있음 (기존 Recipe 편집)
-
-    fetch(`http://localhost:3000/recipes/${recipeID}`, {
-        method: 'get',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-auth': token
-        }
-    })
-        .then(response => response.json())
-        .then((res) => {
-            theRecipe = {
-                mainIngre: res.recipe.mainIngre,
-                subIngre: res.recipe.subIngre
+// 'Delete' Button
+document.querySelector('#edit-delete').addEventListener('click', (e) => {
+    const deleteConfirm = confirm("Want to delete?");
+    if (deleteConfirm) {
+        fetch(`http://localhost:3000/recipes/${recipeID}`, {
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth': token
             }
-
-            renderIngre('main')
-            renderIngre('sub')
-
-            // document.querySelector('#mainIngreArea').addEventListener('change',(e) => {
-            //     console.log(e)
-            // })
-
+        }).then((res) => {
+            location.assign(`/main.html`)
         })
-
-} else {    // hash 없음 (새 Recipe 작성)
-    theRecipe = {
-        mainIngre: [{
-            name: '',
-            amount: ''
-        }],
-        subIngre: [{
-            name: '',
-            amount: ''
-        }]
+        .catch((e) => {
+            console.log('Deleting request failed')
+        })
     }
-    renderIngre('main')
-    renderIngre('sub')
-}
-
-
-// Main Ingredient 'Add' Button
-document.querySelector('#addMainIngre').addEventListener('click', () => {
-    const ingreId = uuidv4()
-    theRecipe.mainIngre.push({
-        id: ingreId,
-        name: '',
-        amount: ''
-    })
-    renderIngre('main')
-    localStorage.setItem(`mainIngre`, JSON.stringify(theRecipe.mainIngre))
-
 })
 
-// Sub Ingredient 'Add' Button
-document.querySelector('#addSubIngre').addEventListener('click', () => {
-    const ingreId = uuidv4()
-    theRecipe.subIngre.push({
-        id: ingreId,
-        name: '',
-        amount: ''
-    })
-    renderIngre('sub')
-    localStorage.setItem(`subIngre`, JSON.stringify(theRecipe.subIngre))
-})
 
+// 'Cancel' button
+document.querySelector('#edit-cancel').addEventListener('click', () => {
+    location.assign(`/main.html`)
+})

@@ -6,18 +6,34 @@
     <title>Recipe App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles/style.css">
-
+    <script>
+        const token = localStorage.getItem('x-auth')
+        if (token) {
+            location.assign('main.html')
+        }
+    </script>
 </head>
 <body>
     
     <h1 style="display:inline-block">Login Area</h1>
 
-    <form id="my-form">
+    <form id="login-form">
         <!-- <label>UserName</label><input id="userName" type="text" name="userName"> -->
         <label>Email</label><input id="email" type="email" name="email">
         <label>Password</label><input id="password" type="password" name="password">
-        <button id="go-to-main" type="submit">GO TO MAIN</button>
+        <button id="go-to-main" type="submit">LOG IN</button>
     </form>
+
+    <div>
+        <h2>Register</h2>
+        <form id="register-form" class="register-form">
+            <label>User name <input id="r-userName" type="text" name="userName"></label>
+            <label>Email <input id="r-email" type="email" name="email"></label>
+            <label>Password<input id="r-password" type="password" name="password"></label>
+            <label>Password Confirm<input id="r-password-confirm" type="password" name="passwordConfirm"></label>
+            <button id="r-register-btn" class="r-register-btn" type="submit">REGISTER</button>
+        </form>
+    </div>
     
     <script src="./scripts/index-bundle.js"></script>
 </body>
