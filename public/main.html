@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Recipe App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/styles.css">
     <script>
         const token = localStorage.getItem('x-auth')
             if (!token) {
@@ -16,35 +16,85 @@
 </head>
 
 <body>
+    <div class="wrapper">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header__icon">
+                <svg viewBox="0 0 71 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+                    <title>ic-logo</title>
+                    <desc>Created with Sketch.</desc>
+                    <g id="index.html" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g id="sign-in" transform="translate(-119.000000, -75.000000)">
+                            <g id="Logo-block" transform="translate(65.000000, 75.000000)">
+                                <g id="ic-logo" transform="translate(54.000000, 0.000000)">
+                                    <text id="ngre" font-family="Lato-Regular, Lato" font-size="26" font-weight="normal" fill="#5FC47D">
+                                        <tspan x="20" y="29">ngre</tspan>
+                                    </text>
+                                    <g id="loco-icon">
+                                        <rect id="Rectangle" fill="#5FC47D" x="0" y="0" width="19" height="12"></rect>
+                                        <rect id="Rectangle-Copy-3" fill="#5FC47D" x="0" y="14" width="19" height="17"></rect>
+                                        <rect id="Rectangle" fill="#FFFFFF" x="14" y="6" width="2" height="3"></rect>
+                                        <rect id="Rectangle-Copy-4" fill="#FFFFFF" x="14" y="17" width="2" height="11"></rect>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+            </h1>
+            <a href="#" class="header__logout" id="logout">Log out</a>
+        </header>
 
-    <h1 style="display:inline-block">Recipe App</h1>
-    <a href="#" id="logout">Log out</a>
-    <p class="greeting">Welcome, <span id="username"></span>!</p>
-    <button id="add-new">Add new recipe</button>
-    <div id="filterIngreArea"></div>
-    <div id="filterTypeArea">
-        <fieldset id="ingredients">
-            <legend>I have these ingredients<button type="button" id="add-ingre">Edit Filter</button></legend>
-            <div id="ingreArea"></div>
-            <form id="newIngreForm" class="newIngreForm">
-                <input id="newIngreInput" class="newIngreInput" name="newIngre" type="text"><button>+</button>
-            </form>
-        </fieldset>
 
-        <fieldset id="foodType">
-            <legend>Food Type<button type="button" id="add-type">Edit Type</button></legend>
-            <div id="typeArea"></div>
-            <form id="newTypeForm">
-                <input id="newTypeInput" class="newTypeInput" name="newType" type="text"><button>+</button>
-            </form>
-            <!-- <input type="radio" id="any" name="foodType" value="any" checked><label for="anyType">Any</label>
-            <input type="radio" id="toppedRice" name="foodType" value="toppedRice"><label for="toppedRice">Topped Rice</label>
-            <input type="radio" id="grilled" name="foodType" value="grilled"><label for="grilled">Grilled</label>
-            <input type="radio" id="noodles" name="foodType" value="noodles"><label for="noodles">Noodles</label> -->
-        </fieldset>
+        <!-- Greeting -->
+        <p class="section-title">Welcome, <span class="text--point" id="username"></span>! <br>
+        Check the ingredients you have!
+        </p>
+
+        <!-- CTA Add Recipe -->
+        <div class="btn-round" id="add-new">
+            <div class="btn-round__icon">
+                <span class="btn-round--line"></span>
+                <span class="btn-round--line btn-round--line-after"></span>
+            </div>
+        </div>
+
+        <!-- Filter Ingredients -->
+        <div id="filterIngreArea" class="filter">
+            <fieldset id="ingredients" class="filter-wrapper">
+                <div class="filter__intro">
+                    <legend class="filter__intro-title">My Ingredients</legend>
+                    <span class="filter__intro-line"></span>
+                    <button class="filter__intro-edit" type="button" id="add-ingre">Edit Filter</button>
+                </div>
+                <div class="filter__items" id="ingreArea"></div>
+                <form id="newIngreForm" class="newIngreForm">
+                    <input id="newIngreInput" class="newIngreInput" name="newIngre" type="text"><button>+</button>
+                </form>
+            </fieldset>
+        </div>
+
+        <!-- Filter Types -->
+        <div id="filterTypeArea">
+            <fieldset id="foodType">
+                <legend>Food Type<button type="button" id="add-type">Edit Type</button></legend>
+                <div id="typeArea"></div>
+                <form id="newTypeForm">
+                    <input id="newTypeInput" class="newTypeInput" name="newType" type="text"><button>+</button>
+                </form>
+                <!-- <input type="radio" id="any" name="foodType" value="any" checked><label for="anyType">Any</label>
+                    <input type="radio" id="toppedRice" name="foodType" value="toppedRice"><label for="toppedRice">Topped Rice</label>
+                    <input type="radio" id="grilled" name="foodType" value="grilled"><label for="grilled">Grilled</label>
+                    <input type="radio" id="noodles" name="foodType" value="noodles"><label for="noodles">Noodles</label> -->
+            </fieldset>
+        </div>
+
+        <!-- Result -->
+        <h2>Saved Recipes</h2>
+        <div id="recipesArea"> </div>
     </div>
-    <h2>Saved Recipes</h2>
-    <div id="recipesArea"> </div>
+
     <script src="./scripts/main-bundle.js"></script>
 </body>
 

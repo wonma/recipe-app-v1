@@ -1,4 +1,12 @@
-const validator = require('validator')
+const modal = document.querySelector('#modal')
+document.getElementById('open-modal').addEventListener('click', () => {
+    modal.classList.add('modal--is-visible')
+})
+
+document.getElementById('modal-close').addEventListener('click', () => {
+    modal.classList.remove('modal--is-visible')
+})
+
 
 document.querySelector('#register-form').addEventListener('submit', (e) => {
     e.preventDefault()
@@ -77,3 +85,4 @@ document.querySelector('#login-form').addEventListener('submit', (e) => {
         })
         .catch(err => { console.log('unable to login') })
 })
+

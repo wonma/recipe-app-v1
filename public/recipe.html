@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Recipe page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/styles.css">
     <script>
         const token = localStorage.getItem('x-auth')
         if (!token) {
@@ -22,7 +22,7 @@
     <p>Serving: <span id="viewServing"></span> </p>
     <div id="mainIngreArea"></div>
     <div id="subIngreArea"></div>
-    <p id="viewBody"></p>
+    <textarea id="viewBody" readonly cols="50" rows="10"></textarea>
 
     <a href="/main.html">to main</a>
     <script src="./scripts/recipe-bundle.js"></script>

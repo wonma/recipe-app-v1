@@ -34,34 +34,51 @@ const pickType = (chosenName) => {
 // [2] Generate DOM
 const getIngreDOM = (ingreName, editState) => {
     const ingreForm = document.createElement('form')
+    
 
     if(editState === 'off') {
+        ingreForm.classList.add('filter__item')
         // submit후 리스트 올라갈 '체크박스' 만들기
         const createdIngre = document.createElement('input')
         createdIngre.setAttribute('type', 'checkbox')
         createdIngre.setAttribute('id', ingreName)
         createdIngre.setAttribute('name', 'foodType')
         createdIngre.setAttribute('value', ingreName)
+        createdIngre.classList.add('filter__checkbox')
 
         // 체크박스와 연결된 label만들기
         const newLabel = document.createElement('label')
         newLabel.setAttribute('for', ingreName)
         newLabel.textContent = ingreName.charAt(0).toUpperCase() + ingreName.slice(1);
+        newLabel.classList.add('filter__name')
+        newLabel.addEventListener('click', (e) => {
+            const checked = e.target.previousSibling.checked
+            console.log(e.target.previousSibling.checked)
+            if(checked) {
+                newLabel.classList.remove('filter__name--checked')
+            } else {
+                newLabel.classList.add('filter__name--checked')
+            }
+        })
 
         // 두 요소 합쳐서 return
         ingreForm.appendChild(createdIngre)
         ingreForm.appendChild(newLabel)
 
     } else if (editState === 'on') {
+        ingreForm.classList.add('filter__item')
+        ingreForm.classList.add('filter__item--edit')
         // 체크박스와 연결된 label만들기
         const newLabel = document.createElement('label')
         newLabel.setAttribute('for', ingreName)
         newLabel.textContent = ingreName.charAt(0).toUpperCase() + ingreName.slice(1)
+        newLabel.classList.add('filter__name')
 
         // delete 버튼
         const deleteIngreBtn = document.createElement('button')
         deleteIngreBtn.setAttribute('name', ingreName)
         deleteIngreBtn.textContent = '-'
+        deleteIngreBtn.classList.add('filter__delete')
         deleteIngreBtn.addEventListener('click', (e) => {
             e.preventDefault()
             const ingreIndex = filterIngre.findIndex((ingre) => {
@@ -71,6 +88,7 @@ const getIngreDOM = (ingreName, editState) => {
             localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
             renderIngreFilter(editFilter.state)
         })     
+
         ingreForm.appendChild(newLabel)
         ingreForm.appendChild(deleteIngreBtn)
     }

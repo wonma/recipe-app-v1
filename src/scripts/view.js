@@ -1,10 +1,5 @@
-import { getData } from './recipe'
 import { getFilterIngre, getFilterType, chosenType } from './filters'
 
-// const recipes = getData() // array로 되어있음
-
-
-// console.log(recipes)
 
 // STEP 3 - renderRecipe 실행 중 filterRecipe 자료 추출 다음에 실행되는 '돔 제작'
 const getRecipeDOM = (recipe) => {
