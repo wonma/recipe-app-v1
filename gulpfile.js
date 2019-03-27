@@ -1,8 +1,5 @@
 var gulp = require('gulp'),
 	watch = require('gulp-watch'),
-	webpack = require('webpack'),
-	webpackConfig = require('./webpack.config.js'),
-	webpackDevMiddleware = require('webpack-dev-middleware'),
 	postcss = require('gulp-postcss'),
 	autoprefixer = require('autoprefixer'),
 	cssvars = require('postcss-simple-vars'),
@@ -19,18 +16,21 @@ gulp.task('watch', function() {
 		server: {
 			baseDir: "./public"
 		},
-		middleware: webpackDevMiddleware(webpack(webpackConfig))
-	});
-	
-	watch('./public/index.html', function() {
+		files: [
+			'styles/*.css',
+			'*.html'
+		]
+	})
+
+	watch('./public/*.html', function() {
 		browserSync.reload();
 	});
 	watch('./src/styles/**/*.css', function() {
 		gulp.start('cssInject');
 	});
-	watch('./src/scripts/**/*.js', function() {
-		browserSync.reload();
-	});
+	// watch('./src/scripts/**/*.js', function() {
+	// 	browserSync.reload();
+	// });
 });
 
 	
@@ -48,6 +48,7 @@ gulp.task('styles',function(){
 //     return 
 //     	.pipe(gulp.dest('./public/scripts'))
 // });
+
 
 
 gulp.task('cssInject', ['styles'] , function(){

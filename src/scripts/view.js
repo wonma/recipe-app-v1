@@ -1,37 +1,72 @@
 import { getFilterIngre, getFilterType, chosenType } from './filters'
 
-
 // STEP 3 - renderRecipe 실행 중 filterRecipe 자료 추출 다음에 실행되는 '돔 제작'
 const getRecipeDOM = (recipe) => {
     const recipeLi = document.createElement('li')
     const recipeA = document.createElement('a')
-    recipeA.classList.add('recipe-link')
+    recipeA.classList.add('recipe__link')
     recipeA.setAttribute('href', `/recipe.html#${recipe._id}`) // 보는 링크
     recipeLi.appendChild(recipeA)
+    recipeLi.classList.add('recipe')
 
     // Title
     const titleEl = document.createElement('h3')
-    titleEl.classList.add('recipe-title')
+    titleEl.classList.add('recipe__title')
     titleEl.textContent = recipe.title
     recipeA.appendChild(titleEl)
-
-    // Go-to-edit button
-    const editEl = document.createElement('a')
-    editEl.textContent = 'edit'
-    editEl.classList.add('recipe-edit')
-    editEl.setAttribute('href', `/edit.html#${recipe._id}`) // 수정하는 링크
-    recipeA.appendChild(editEl)
-
 
     // Food Type
     const foodTypeEl = document.createElement('span')
     foodTypeEl.textContent = recipe.type
+    foodTypeEl.classList.add('recipe__type')
     recipeA.appendChild(foodTypeEl)
 
-    // Match Score
+
+    // Main Ingredient
+    const mainIngreArea = document.createElement('div')
+    mainIngreArea.classList.add('recipe__mainIngres')
+
+    const mainTitle = document.createElement('p')
+    mainTitle.textContent = 'main'
+    mainIngreArea.appendChild(mainTitle)
+
+    const mainIngresWrapper = document.createElement('div')
+    mainIngresWrapper.classList.add('recipe__ingresWrapper')
+
+    recipe.mainIngre.forEach((eachIngre) => {
+        const mainIngreEl = document.createElement('span')
+        mainIngreEl.textContent = eachIngre.name  
+        mainIngresWrapper.appendChild(mainIngreEl)
+    })
+    mainIngreArea.appendChild(mainIngresWrapper)
+    recipeA.appendChild(mainIngreArea)
+
+
+    // Sub Ingredient
+    const subIngreArea = document.createElement('div')
+    subIngreArea.classList.add('recipe__subIngres')
+
+    const subTitle = document.createElement('p')
+    subTitle.textContent = 'sub'
+    subIngreArea.appendChild(subTitle)
+
+    const subIngresWrapper = document.createElement('div')
+    subIngresWrapper.classList.add('recipe__ingresWrapper')
+
+    recipe.subIngre.forEach((eachIngre) => {
+        const subIngreEl = document.createElement('span')
+        subIngreEl.textContent = eachIngre.name
+        subIngresWrapper.appendChild(subIngreEl)
+    })
+    subIngreArea.appendChild(subIngresWrapper)
+    recipeA.appendChild(subIngreArea)
+
+
+    // Message
     const matchScoreEl = document.createElement('span')
+    matchScoreEl.classList.add('recipe__message')
     // Helping message only when the matchRate is not zero. (So, initial page load -> No helping message)
-    if(recipe.matchRate !== 0) {
+    if (recipe.matchRate !== 0) {
         if (recipe.matchRate >= 80) {
             matchScoreEl.textContent = 'Perfect Match!'
         } else if (recipe.matchRate >= 40) {
@@ -42,27 +77,19 @@ const getRecipeDOM = (recipe) => {
             matchScoreEl.textContent = 'Go grocery shopping!'
         }
     }
-    recipeA.appendChild(matchScoreEl)
 
-    
-    // Main Ingredient
-    const mainIngreArea = document.createElement('div')
-    recipe.mainIngre.forEach((eachIngre) => {
-        const mainIngreEl = document.createElement('span')
-        mainIngreEl.textContent = eachIngre.name  
-        mainIngreArea.appendChild(mainIngreEl)     
-    })
-    recipeA.appendChild(mainIngreArea)
+    // Go-to-edit button
+    const editEl = document.createElement('a')
+    editEl.textContent = 'edit'
+    editEl.classList.add('recipe__edit')
+    editEl.setAttribute('href', `/edit.html#${recipe._id}`) // 수정하는 링크
 
-
-    // Sub Ingredient
-    const subIngreArea = document.createElement('div')
-    recipe.subIngre.forEach((eachIngre) => {
-        const subIngreEl = document.createElement('span')
-        subIngreEl.textContent = eachIngre.name
-        subIngreArea.appendChild(subIngreEl)
-    })
-    recipeA.appendChild(subIngreArea)
+    // Message + Button Combining
+    const rowBox = document.createElement('div')
+    rowBox.classList.add('recipe__bottomLine')
+    rowBox.appendChild(matchScoreEl)
+    rowBox.appendChild(editEl)
+    recipeA.appendChild(rowBox)
 
     return recipeLi
 }

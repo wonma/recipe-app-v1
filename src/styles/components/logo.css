@@ -8,7 +8,7 @@
 
     &__icon {
         width: calc(71px * 1);
-        height: calc(34px * 1);
+        height: calc(34px * 1);   
     }
 
     &__phrase {

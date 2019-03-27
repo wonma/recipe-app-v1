@@ -53,7 +53,6 @@ const getIngreDOM = (ingreName, editState) => {
         newLabel.classList.add('filter__name')
         newLabel.addEventListener('click', (e) => {
             const checked = e.target.previousSibling.checked
-            console.log(e.target.previousSibling.checked)
             if(checked) {
                 newLabel.classList.remove('filter__name--checked')
             } else {
@@ -67,7 +66,7 @@ const getIngreDOM = (ingreName, editState) => {
 
     } else if (editState === 'on') {
         ingreForm.classList.add('filter__item')
-        ingreForm.classList.add('filter__item--edit')
+        ingreForm.classList.add('filter__item--edit') // padding 조절되는 css추가됨
         // 체크박스와 연결된 label만들기
         const newLabel = document.createElement('label')
         newLabel.setAttribute('for', ingreName)
@@ -100,7 +99,9 @@ const getIngreDOM = (ingreName, editState) => {
 // Generate Type DOM
 const getTypeDOM = (typeName, editState) => {
     const typeForm = document.createElement('form')
+    typeForm.classList.add('filter__item')
     const typeNameID = typeName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
+    
     if (editState === 'off') {
         
         // submit후 리스트 올라갈 '라디오박스' 만들기
@@ -109,29 +110,47 @@ const getTypeDOM = (typeName, editState) => {
         createdType.setAttribute('id', typeNameID)
         createdType.setAttribute('name', 'foodType')
         createdType.setAttribute('value', typeNameID)
+        createdType.classList.add('filter__radio')
+
         if (chosenType.type === typeNameID) {
             createdType.setAttribute('checked', 'checked')
         }
 
+
         // 체크박스와 연결된 label만들기
+        const psuedoRadio = document.createElement('span')
+        const labelText = document.createElement('span')
+        labelText.classList.add('filter__radio-label-text')
+
+        labelText.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
+        psuedoRadio.classList.add('psuedo-radio')
+
         const newLabel = document.createElement('label')
         newLabel.setAttribute('for', typeNameID)
-        newLabel.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
+        // newLabel.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
+        newLabel.classList.add('filter__radio-label')
 
         // 두 요소 합쳐서 return
+        newLabel.appendChild(labelText)
+        newLabel.appendChild(psuedoRadio)
         typeForm.appendChild(createdType)
         typeForm.appendChild(newLabel)
 
     } else if (editState === 'on') {
+
         // 체크박스와 연결된 label만들기
+        typeForm.classList.add('filter__item--edit') // padding 조절되는 css추가됨
         const newLabel = document.createElement('label')
         newLabel.setAttribute('for', typeNameID)
         newLabel.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
-
+        newLabel.classList.add('filter__name') // filterIngre와 스타일이 같아짐
+        
         // delete 버튼
         const deleteTypeBtn = document.createElement('button')
         deleteTypeBtn.setAttribute('name', typeNameID)
         deleteTypeBtn.textContent = '-'
+        deleteTypeBtn.classList.add('filter__delete')
+
         deleteTypeBtn.addEventListener('click', (e) => {
             e.preventDefault()
             const typeIndex = filterTypes.findIndex((type) => {
@@ -166,9 +185,9 @@ const renderIngreFilter = (editState) => {
     const newIngreForm = document.querySelector('#newIngreForm')
 
     if (editState === 'on') {
-        newIngreForm.classList.remove('isEditOff')
+        newIngreForm.classList.add('isEditOn')
     } else if (editState === 'off') {
-        newIngreForm.classList.add('isEditOff')
+        newIngreForm.classList.remove('isEditOn')
     }
 }
 
@@ -186,9 +205,9 @@ const renderTypeFilter = (editState) => {
     const newTypeForm = document.querySelector('#newTypeForm')
 
     if (editState === 'on') {
-        newTypeForm.classList.remove('isEditOff')
+        newTypeForm.classList.add('isEditOn')
     } else if (editState === 'off') {
-        newTypeForm.classList.add('isEditOff')
+        newTypeForm.classList.remove('isEditOn')
     }
 }
 

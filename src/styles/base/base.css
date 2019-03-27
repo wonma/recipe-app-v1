@@ -6,7 +6,7 @@
 
     --color-grey-light-1: #ededed;
     --color-grey-light-2: #B7B7B7;
-    --color-grey-light-3: #f0eeee;
+    --color-grey-light-3: #D8D8D8;
     --color-grey-light-4: #ccc;
     
     --color-grey-dark-1: #333;
@@ -70,22 +70,6 @@ a {
     color: var(--color-primary)
 }
 
-.recipe-link {
-    display: block;
-}
-
-.recipe-title {
-    display: inline-block;
-}
-
-.recipe-edit {
-    color: orangered;
-}
-
-.isEditOff {
-    display: none;
-    /* visibility: hidden; */
-}
 
 .register-form {
     display: flex;

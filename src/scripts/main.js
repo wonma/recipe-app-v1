@@ -1,6 +1,7 @@
 import { renderList } from './view'
 import { getFilterIngre, renderIngreFilter, editFilter, renderTypeFilter, editType, pickType } from './filters'
 
+
 const token = localStorage.getItem('x-auth')
 
 if(!token) {
