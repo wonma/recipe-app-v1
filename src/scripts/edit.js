@@ -18,26 +18,16 @@ if (recipeID.length > 0) {
 }
 
 const getTypeDOM = (typeName) => {
-    const typeDiv = document.createElement('div')
-    // const typeNameID = typeName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
-
     // '라디오박스' 만들기
-    const createdType = document.createElement('input')
-    createdType.setAttribute('type', 'radio')
-    createdType.setAttribute('id', typeName)
-    createdType.setAttribute('name', 'foodType')
-    createdType.setAttribute('value', typeName)
-    createdType.classList.add('foodType')
+    const option = document.createElement('option')
+    option.setAttribute('id', typeName)
+    option.setAttribute('value', typeName)
+    option.classList.add('foodType')
+    option.textContent = typeName.charAt(0).toUpperCase() + typeName.slice(1).split('-').join(' ')
 
-    // 체크박스와 연결된 label만들기
-    const newLabel = document.createElement('label')
-    newLabel.setAttribute('for', typeName)
-    newLabel.textContent = typeName.charAt(0).toUpperCase() + typeName.slice(1).split('-').join(' ')
-
-    // 두 요소 합쳐서 return
-    typeDiv.appendChild(createdType)
-    typeDiv.appendChild(newLabel)
-    return typeDiv
+    // const select = document.querySelector('#editType')
+    // select.appendChild(option)
+    return option
 }
 
 const renderTypeFilter = () => {
@@ -55,16 +45,20 @@ const renderTypeFilter = () => {
 // Initiating 'Main Ingre' (DOM)
 const generateIngreDOM = (ingre, type) => {
 
-    const ingreDiv = document.createElement('div')
+    const ingreLi = document.createElement('li')
     const nameEl = document.createElement('input')
     const amountEl = document.createElement('input')
     const removeEl = document.createElement('button')
 
     nameEl.value = ingre.name.toLowerCase()
     amountEl.value = ingre.amount
-    removeEl.textContent = 'x'
+
+    if(type === 'main') {
+        ingreLi.setAttribute('id', 'mainIngre')
+    } else {
+        ingreLi.setAttribute('id', 'subIngre')
+    }
     nameEl.setAttribute('placeholder', 'name')
-    // nameEl.setAttribute('id', `${type}Ingre-`)
     amountEl.setAttribute('placeholder', 'amount')
 
     nameEl.addEventListener('change', (e) => {
@@ -111,10 +105,14 @@ const generateIngreDOM = (ingre, type) => {
         })
     }
 
-    ingreDiv.appendChild(nameEl)
-    ingreDiv.appendChild(amountEl)
-    ingreDiv.appendChild(removeEl)
-    return ingreDiv
+    ingreLi.classList.add('edit__ingre')
+    nameEl.classList.add('edit__ingre-name')
+    amountEl.classList.add('edit__ingre-amount')
+
+    ingreLi.appendChild(nameEl)
+    ingreLi.appendChild(amountEl)
+    ingreLi.appendChild(removeEl)
+    return ingreLi
 }
 
 // Initiating 'Main Ingre' (Render)
@@ -167,10 +165,10 @@ if (recipeID.length > 0) { // hash 있음 (기존 Recipe 편집)
             editTitle.value = theRecipe.title
 
             // type
-            const editType = document.querySelectorAll('.foodType')
-            Object.values(editType).forEach((each) => {
+            const editType = document.querySelector('#editType')
+            Object.values(editType.children).forEach((each) => {
                 if (each.value === theRecipe.type) {
-                    document.querySelector(`#${each.id}`).setAttribute('checked', 'checked')
+                    document.querySelector(`#${each.id}`).setAttribute('selected', 'selected')
                 }
             })
 
@@ -235,11 +233,9 @@ document.querySelector('#addSubIngre').addEventListener('click', () => {
 document.querySelector('#edit-form').addEventListener('submit', (e) => {
     e.preventDefault()
 
-    console.log(e)
-
     const body = {
         title: e.target.elements.editTitle.value,
-        type: e.target.elements.foodType.value,
+        type: e.target.elements.editType.value,
         serving: e.target.elements.editServing.value,
         text: e.target.elements.editBody.value,
         mainIngre: [],
@@ -248,8 +244,20 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
 
 
     try {
+        document.querySelectorAll('#mainIngre')
         // 이렇게 셀렉 가능하긴 함: document.querySelector('#subIngreArea').children
-        Array.from(e.target.children.mainIngres.children.mainIngreArea.children).forEach((each) => {
+        // Array.from(e.target.children.mainIngres.children.mainIngreArea.children).forEach((each) => {
+        //     const name = each.children[0].value
+        //     const amount = each.children[1].value
+        //     if (name.length === 0 || amount.length === 0) {
+        //         throw new Error('The ingre should be full')
+        //     }
+        //     body.mainIngre.push({
+        //         name,
+        //         amount
+        //     })
+        // })
+        document.querySelectorAll('#mainIngre').forEach((each) => {
             const name = each.children[0].value
             const amount = each.children[1].value
             if (name.length === 0 || amount.length === 0) {
@@ -261,7 +269,7 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
             })
         })
 
-        Array.from(e.target.children.subIngres.children.subIngreArea.children).forEach((each) => {
+        document.querySelectorAll('#subIngre').forEach((each) => {
             const name = each.children[0].value
             const amount = each.children[1].value
             if (name.length === 0 || amount.length === 0) {
@@ -338,7 +346,7 @@ document.querySelector('#edit-delete').addEventListener('click', (e) => {
 })
 
 
-// 'Cancel' button
-document.querySelector('#edit-cancel').addEventListener('click', () => {
-    location.assign(`/main.html`)
-})
+// // 'Cancel' button
+// document.querySelector('#edit-cancel').addEventListener('click', () => {
+//     location.assign(`/main.html`)
+// })

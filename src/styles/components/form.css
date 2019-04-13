@@ -60,4 +60,10 @@
         position: relative;
         z-index:-1;
     }
+
+    &__error {
+        margin-top: 2rem;
+        color: red;
+        height: 4rem;
+    }
 }

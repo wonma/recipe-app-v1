@@ -11,6 +11,23 @@
         cursor: pointer;
         background-color: var(--color-primary-darker);
     }
+
+    &--delete {
+        width: 5rem;
+        border: 1px solid var(--color-grey-light-1);
+        background-color: transparent;
+        transition: all .5s ease;
+
+        &:hover {
+            border: 1px solid var(--color-grey-light-2);
+            cursor: pointer;
+        }
+    }
+
+    &--edit {
+        width: 30%;
+        margin-left: 1rem;
+    }
 }
 
 .btn-extra {
@@ -59,4 +76,18 @@
     &--line-after {
         transform: rotate(90deg);
     }
+
+    &--back {
+        left:1.8rem;
+        background-color: #fff;
+        box-shadow: rgba(0, 0, 0, 0.15) 2px 6.5px 30px;
+        & > a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(-1px);
+        }
+    }
 }
+
+

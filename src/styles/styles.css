@@ -8,6 +8,8 @@
 @import "components/button.css";
 @import "components/header.css";
 @import "components/filter.css";
-@import "components/recipe.css";
+@import "components/recipeCard.css";
 
-@import "pages/main.css"
+@import "pages/main.css";
+@import "pages/view.css";
+@import "pages/edit.css";

@@ -7,14 +7,42 @@ document.getElementById('modal-close').addEventListener('click', () => {
     modal.classList.remove('modal--is-visible')
 })
 
+const showError = function (area, message) {
+    document.querySelector('#errorMessage').innerHTML = ''
+    const errorArea = document.querySelector(area) // div
+    const errorMessage = document.createElement('p')
+    errorMessage.textContent = message
+    errorArea.append(errorMessage)
+}
 
 document.querySelector('#register-form').addEventListener('submit', (e) => {
     e.preventDefault()
     const [userName, email, password, passwordConfirm] = e.target.elements
-    if (password.value !== passwordConfirm.value) {
-        console.log('password different')
-        return 
+
+    const validChars = /^([a-zA-Z0-9_\-]*)$/  // No special character, no space allowed
+
+    // When nothing has been typed
+    if (!userName.value.length || 
+        !email.value.length || 
+        !password.value.length || 
+        !passwordConfirm.value.length) { 
+        showError('#errorMessage', 'Please fill all the fields.')
+        return false
     }
+
+    // When something has been typed
+    if (!validChars.test(userName.value)) {
+        showError('#errorMessage', 'Username error: No special character, no space')
+        return false
+    } else if (password.value.length < 6) {
+        showError('#errorMessage', 'Password should be at least 6 characters.')
+        return false
+    }
+      else if (password.value !== passwordConfirm.value) {
+        showError('#errorMessage', 'Please type your password again.')
+        return false
+    } 
+
     fetch('http://localhost:3000/users/', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -27,7 +55,21 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
     })
     .then(response => response.json())
     .then(loginInfo => {
+        // db에서 오류라고 판단하면 loginInfo는 error 오브젝트가 됨.
+        // if the inputs are invalid, loginInfo is 'errors' object.
+        document.querySelector('#errorMessage').innerHTML =''
+        
         console.log(loginInfo)
+        if(loginInfo.code === 11000) {
+            showError('#errorMessage', 'The email is already registered.')
+
+        }
+        if(loginInfo.email) {
+            showError('#errorMessage', 'Woops! Email is invalid.')
+        } else if(loginInfo.password) {
+            showError('#errorMessage', 'Woops! Password is invalid.')
+        }
+
         if (typeof loginInfo.token === 'string') {
             localStorage.setItem('x-auth', loginInfo.token)
         } else {
@@ -55,8 +97,10 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
 
 document.querySelector('#login-form').addEventListener('submit', (e) => {
     e.preventDefault()
+    document.querySelector('#loginError').innerHTML = ''
 
     const [email, password] = e.target.elements
+    
     fetch('http://localhost:3000/users/login', {
         method: 'post',
         headers: { 'Content-Type': 'application/json' },
@@ -66,6 +110,14 @@ document.querySelector('#login-form').addEventListener('submit', (e) => {
         })
     }).then(response => response.json())
         .then(loginInfo => {
+            if (loginInfo.message ==='No existing user') {
+                showError('#loginError', `The email is not registered.`)
+                return false
+            } else if (loginInfo.message === 'Wrong password') {
+                showError('#loginError', `Check the password please.`)
+                return false
+            }
+            
             localStorage.setItem('x-auth', loginInfo.token)
             localStorage.setItem('user', loginInfo.user.name)
 
@@ -83,6 +135,6 @@ document.querySelector('#login-form').addEventListener('submit', (e) => {
 
             location.assign(`/main.html`)
         })
-        .catch(err => { console.log('unable to login') })
+        .catch(err => {console.log(err)})
 })
 

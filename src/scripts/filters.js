@@ -9,6 +9,7 @@ const editType = {
     state: 'off'
 }
 
+// [Export to mainRender.js]
 const chosenType = {
     type: 'any'
 }
@@ -20,6 +21,8 @@ const getFilterType = () => {
     return JSON.parse(localStorage.getItem('filterTypes'))
 }
 
+// 선택된 type이름을 받아 chosenType에 넘기고, filterTypes어레이 정보도 업뎃함
+// [Export to main.js] 
 const pickType = (chosenName) => {
     filterTypes.forEach((type) => {
         if (type.name === chosenName) {
@@ -260,4 +263,4 @@ newTypeForm.addEventListener('submit', (e) => {
 
 
 export {renderIngreFilter, editFilter, getFilterIngre, getFilterType, 
-        renderTypeFilter, editType, pickType, chosenType }
+        renderTypeFilter, filterTypes, editType, pickType, chosenType }

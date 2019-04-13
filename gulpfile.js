@@ -3,6 +3,7 @@ var gulp = require('gulp'),
 	postcss = require('gulp-postcss'),
 	autoprefixer = require('autoprefixer'),
 	cssvars = require('postcss-simple-vars'),
+	mixins = require('postcss-mixins'),
 	nested = require('postcss-nested'),
 	cssImport = require('postcss-import'),
 	hexrgba = require('postcss-hexrgba'),
@@ -36,7 +37,7 @@ gulp.task('watch', function() {
 	
 gulp.task('styles',function(){
 	return gulp.src('./src/styles/styles.css')
-	.pipe(postcss([cssImport, calc, cssvars, nested, hexrgba, autoprefixer]))
+	.pipe(postcss([cssImport, mixins, calc, cssvars, nested, hexrgba, autoprefixer]))
 	.on('error', function(errorInfo){
 		console.log(errorInfo.toString());
 		this.emit('end');

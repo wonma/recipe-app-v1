@@ -1,5 +1,5 @@
-import { renderList } from './view'
-import { getFilterIngre, renderIngreFilter, editFilter, renderTypeFilter, editType, pickType } from './filters'
+import { renderList } from './mainRender'
+import { getFilterIngre, renderIngreFilter, chosenType, editFilter, renderTypeFilter, editType, pickType } from './filters'
 
 
 const token = localStorage.getItem('x-auth')
@@ -18,7 +18,7 @@ document.querySelector('#username').textContent = username
 renderIngreFilter(editFilter.state)
 renderTypeFilter(editType.state)
 
-
+let getRecipes = []
 
 fetch('http://localhost:3000/recipes', {
     method: 'get',
@@ -30,6 +30,7 @@ fetch('http://localhost:3000/recipes', {
     .then(response => response.json())
     .then((res) => {
         renderList(res.recipes)
+        getRecipes = res.recipes
         return res.recipes
     })
     .then((recipes) => {
@@ -81,8 +82,16 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
         })
             .then(response => response.json())
             .then((filterIngre) => {
-                console.log(filterIngre)
                 renderIngreFilter(editFilter.state)
+
+                // reset rendered list
+                const currentIngre = JSON.parse(localStorage.getItem('filterIngre'))
+                const updatedIngre = currentIngre.map(ingre => {
+                    return {name: ingre.name, chosen: false}
+                })
+                localStorage.setItem('filterIngre', JSON.stringify(updatedIngre))
+                renderList(getRecipes)
+
             })
             .catch((e) => {
                 console.log('Error from front')
@@ -101,18 +110,34 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
     } else if (editType.state === 'on') {
         editType.state = 'off'
         editTypeBtn.textContent = 'Edit Type'
-        renderTypeFilter(editFilter.state)
+
+        const currentType = JSON.parse(localStorage.getItem('filterTypes'))
+        const updatedTypes = currentType.map(type => {
+            if (type.name === "any") {
+                return { name: type.name, chosen: true }
+            } else {
+                return { name: type.name, chosen: false }
+            }
+        })
+
         fetch('http://localhost:3000/users/me/types', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
                 'x-auth': token
             },
-            body: JSON.stringify({ filterTypes: JSON.parse(localStorage.getItem('filterTypes')) })
+            body: JSON.stringify({ filterTypes: updatedTypes })
         })
             .then(response => response.json())
-            .then((filterType) => {
-                renderIngreFilter(editFilter.state)
+            .then((filterTypes) => {
+                // reset rendered list
+                localStorage.setItem('filterTypes', JSON.stringify(updatedTypes))
+
+                // 문제는 여기에 있었다. type filter 렌더링을 좌지우지하는건 localStorage가 아니라
+                // chosenType이었다.
+                chosenType.type ='any'
+                renderTypeFilter(editFilter.state)
+                renderList(getRecipes)
             })
             .catch((e) => {
                 console.log('Error from front')
