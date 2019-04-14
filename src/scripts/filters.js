@@ -37,22 +37,20 @@ const pickType = (chosenName) => {
 // [2] Generate DOM
 const getIngreDOM = (ingreName, editState) => {
     const ingreForm = document.createElement('form')
-    
-
+    const ingreNameID = ingreName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
     if(editState === 'off') {
         ingreForm.classList.add('filter__item')
         // submit후 리스트 올라갈 '체크박스' 만들기
         const createdIngre = document.createElement('input')
         createdIngre.setAttribute('type', 'checkbox')
-        createdIngre.setAttribute('id', ingreName)
-        createdIngre.setAttribute('name', 'foodType')
-        createdIngre.setAttribute('value', ingreName)
+        createdIngre.setAttribute('id', ingreNameID)
+        createdIngre.setAttribute('value', ingreNameID)
         createdIngre.classList.add('filter__checkbox')
 
         // 체크박스와 연결된 label만들기
         const newLabel = document.createElement('label')
-        newLabel.setAttribute('for', ingreName)
-        newLabel.textContent = ingreName.charAt(0).toUpperCase() + ingreName.slice(1);
+        newLabel.setAttribute('for', ingreNameID)
+        newLabel.textContent = ingreNameID.charAt(0).toUpperCase() + ingreNameID.split('-').join(' ').slice(1);
         newLabel.classList.add('filter__name')
         newLabel.addEventListener('click', (e) => {
             const checked = e.target.previousSibling.checked
@@ -72,13 +70,13 @@ const getIngreDOM = (ingreName, editState) => {
         ingreForm.classList.add('filter__item--edit') // padding 조절되는 css추가됨
         // 체크박스와 연결된 label만들기
         const newLabel = document.createElement('label')
-        newLabel.setAttribute('for', ingreName)
-        newLabel.textContent = ingreName.charAt(0).toUpperCase() + ingreName.slice(1)
+        newLabel.setAttribute('for', ingreNameID)
+        newLabel.textContent = ingreNameID.charAt(0).toUpperCase() + ingreNameID.split('-').join(' ').slice(1);
         newLabel.classList.add('filter__name')
 
         // delete 버튼
         const deleteIngreBtn = document.createElement('button')
-        deleteIngreBtn.setAttribute('name', ingreName)
+        deleteIngreBtn.setAttribute('name', ingreNameID)
         deleteIngreBtn.textContent = '-'
         deleteIngreBtn.classList.add('filter__delete')
         deleteIngreBtn.addEventListener('click', (e) => {
@@ -103,6 +101,7 @@ const getIngreDOM = (ingreName, editState) => {
 const getTypeDOM = (typeName, editState) => {
     const typeForm = document.createElement('form')
     typeForm.classList.add('filter__item')
+    // 띄어쓰기 부분은 '-'로 바꾸기
     const typeNameID = typeName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
     
     if (editState === 'off') {
@@ -125,12 +124,12 @@ const getTypeDOM = (typeName, editState) => {
         const labelText = document.createElement('span')
         labelText.classList.add('filter__radio-label-text')
 
+        // '-'로 처리된 부분 띄어쓰기로 바꾸기
         labelText.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
         psuedoRadio.classList.add('psuedo-radio')
 
         const newLabel = document.createElement('label')
         newLabel.setAttribute('for', typeNameID)
-        // newLabel.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
         newLabel.classList.add('filter__radio-label')
 
         // 두 요소 합쳐서 return
@@ -186,10 +185,13 @@ const renderIngreFilter = (editState) => {
     })
 
     const newIngreForm = document.querySelector('#newIngreForm')
+    const ingredients = document.querySelector('#ingredients')
 
     if (editState === 'on') {
+        ingredients.classList.add('isEditOn')
         newIngreForm.classList.add('isEditOn')
     } else if (editState === 'off') {
+        ingredients.classList.remove('isEditOn')
         newIngreForm.classList.remove('isEditOn')
     }
 }
@@ -221,21 +223,18 @@ const newFilterIngre = document.querySelector('#newIngreForm')
 const newIngreInput = document.querySelector('#newIngreInput')
 newFilterIngre.addEventListener('submit', (e) => {
     e.preventDefault()
-
-    const inputText = e.target.elements.newIngre.value.trim()
+    // trim하고 연속띄어쓰기를 single로바꾸고 띄어쓰기를 '-'로 전환하기
+    const inputText = e.target.elements.newIngre.value.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
 
     if(inputText.length > 0) {
-        const newIngreName = inputText.toLowerCase()
         filterIngre.push({
-            name: newIngreName,
+            name: inputText,
             chosen: false
         })
         localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
 
         newIngreInput.value = ''
         renderIngreFilter(editFilter.state)
-    } else {
-        // 경고문 띄우는거 작업해야함
     }
 })
 

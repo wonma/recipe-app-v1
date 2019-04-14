@@ -8,11 +8,12 @@
 }
 
 .recipe-list {
-    margin-top: 2rem;
+    margin-top: 5rem;
     margin-bottom: 10rem;
     margin-right: -1rem;
+
     &__title {
-        font-size: 1.4rem;
+        font-size: 2rem;
         color: var(--color-primary);
         font-weight: 400;   
     }

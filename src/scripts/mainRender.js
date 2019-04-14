@@ -35,7 +35,7 @@ const getRecipeDOM = (recipe) => {
 
     recipe.mainIngre.forEach((eachIngre) => {
         const mainIngreEl = document.createElement('span')
-        mainIngreEl.textContent = eachIngre.name  
+        mainIngreEl.textContent = eachIngre.name.split('-').join(' ')
         mainIngresWrapper.appendChild(mainIngreEl)
     })
     mainIngreArea.appendChild(mainIngresWrapper)
@@ -55,7 +55,7 @@ const getRecipeDOM = (recipe) => {
 
     recipe.subIngre.forEach((eachIngre) => {
         const subIngreEl = document.createElement('span')
-        subIngreEl.textContent = eachIngre.name
+        subIngreEl.textContent = eachIngre.name.split('-').join(' ')
         subIngresWrapper.appendChild(subIngreEl)
     })
     subIngreArea.appendChild(subIngresWrapper)

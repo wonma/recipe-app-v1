@@ -46,8 +46,8 @@
         </header>
 
         <!-- CTA Back to Main -->
-        <div class="btn-round btn-round--back">
-            <a class="btn-round__icon" href="/main.html">
+        <a class="btn-round btn-round--back" href="./main.html">
+            <span class="btn-round__icon">
                 <svg width="8px" height="12px" viewBox="0 0 8 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
                     <title>chevron left</title>
@@ -60,15 +60,18 @@
                         </g>
                     </g>
                 </svg>
-            </a>
-        </div>
+            </span>
+        </a>
 
         <form id="edit-form" class="edit__form">
+
+            <!-- Title -->
             <fieldset class="edit__wrapper">
                 <label for="title" class="edit__subTitle">Title</label>
                 <input type="text" class="edit__title" id="editTitle" name="editTitle" placeholder="title">
             </fieldset>
 
+            <!-- Type & Serving -->
             <div class="col-2-atSmall">
                 <fieldset class="edit__wrapper edit__selectGroup">
                     <label for="type" class="edit__subTitle">Type</label>
@@ -87,6 +90,7 @@
                 </fieldset>
             </div>
 
+            <!-- MainIngre & SubIngre -->
             <div class="col-2-atLarge">
                 <div class="col-2-atMedium">
                     <fieldset id="mainIngres" class="edit__wrapper">
@@ -105,8 +109,9 @@
                     <textarea id="editBody" name="editBody" class="edit__textarea" placeholder="Write how to make"></textarea>
                 </fieldset>
             </div>
-            <!-- CTA : Delete and Save -->
+            <!-- Buttons : Delete & Save -->
             <div class="edit__btn-cta">
+                <div id="edit__error-msg" class="edit__error-msg"></div>
                 <button class="btn-cta--delete" type="button" id="edit-delete">
                     <svg width="14px" height="18px" viewBox="0 0 14 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->

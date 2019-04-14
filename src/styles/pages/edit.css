@@ -30,6 +30,16 @@ fieldset {
     }  
 }
 
+@keyframes slideIn {
+    from {
+        transform: translateY(-2rem);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0rem);
+        opacity: 1;
+    }       
+}
 
 .edit {
 
@@ -40,6 +50,7 @@ fieldset {
     &__wrapper {
         display: flex;
         margin-top: 3rem;
+        margin-bottom: 2rem;
         flex-direction: column;
         align-items: stretch;
         width: 100%;
@@ -157,11 +168,43 @@ fieldset {
         line-height: 1.6;
     }
 
-    &__btn-cta {
-        margin-top: 3rem;
+    /* CTA row : warning message, delete, Save */
+    &__error-msg {
         display: flex;
+        height: auto;
+        justify-content: center;
+        flex: 1 0 100%;
+
+        @mixin atSmall{
+            flex: 0 1 auto;
+            margin-right: 1rem;
+        }
+    }
+
+    &__error-msg > p {
+        line-height: 2;
+        color: #D8000C;
+        background-color: #FFBABA;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 1rem;
+        padding: 1rem 2rem;
+        border-radius: 4px;
+        transform: translateY(-2rem);
+        animation: slideIn .6s ease-out forwards;
+
+        @mixin atSmall{
+            margin-bottom: 0;
+            height: 100%;
+        }
+    }
+
+    &__btn-cta {
+        margin-top: 1rem;
+        display: flex;
+        flex-wrap: wrap;
         justify-content: flex-end; 
-        margin-bottom: 3rem;
+        margin-bottom: 9rem;
         
         & > button {
             display: block;

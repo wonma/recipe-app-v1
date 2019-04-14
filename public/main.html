@@ -61,43 +61,54 @@
             </div>
         </div>
 
-        <!-- Filter Ingredients -->
-        <div id="filterIngreArea" class="filter">
-            <fieldset id="ingredients" class="filter-wrapper">
-                <div class="filter__intro">
-                    <legend class="filter__intro-title">My Ingredients</legend>
-                    <span class="filter__intro-line"></span>
-                    <button class="filter__intro-edit" type="button" id="add-ingre">Edit Filter</button>
-                </div>
-                <div class="filter__items" id="ingreArea"></div>
-                <form id="newIngreForm" class="newIngreForm">
-                    <input id="newIngreInput" class="newIngreInput" name="newIngre" type="text"><button>+</button>
-                </form>
-            </fieldset>
+        <!-- Filter -->
+        <div class="filters">
+            <!-- Filter Ingredients -->
+            <div id="filterIngreArea">
+                <fieldset id="ingredients" class="filter-wrapper">
+                    <div class="filter__intro">
+                        <legend class="filter__intro-title">My Ingredients</legend>
+                        <button class="filter__intro-edit" type="button" id="add-ingre">Edit</button>
+                    </div>
+                    <div class="filter__items" id="ingreArea"></div>
+                    <form id="newIngreForm" class="newIngreForm">
+                        <input id="newIngreInput" 
+                        class="newIngreInput" 
+                        name="newIngre" 
+                        type="text" 
+                        placeholder="Type a new ingredient name here."
+                        pattern=".{1,15}" required title="15 characters maximum"
+                        >
+                        <button>+</button>
+                    </form>
+                </fieldset>
+            </div>
+            
+            <!-- Filter Types -->
+            <div id="filterTypeArea">
+                <fieldset id="foodType" class="filter-wrapper">
+                    <div class="filter__intro">
+                        <legend class="filter__intro-title">Food Type</legend>
+                        <button class="filter__intro-edit" type="button" id="add-type">Edit</button>
+                    </div>
+                    <div id="typeArea" class="filter__items"></div>
+                    <form id="newTypeForm" class="newTypeForm">
+                        <input id="newTypeInput" 
+                        class="newTypeInput" 
+                        name="newType" 
+                        type="text" 
+                        placeholder="Type a new type name here."
+                        pattern=".{1,15}" required title="15 characters maximum"
+                        ><button>+</button>
+                    </form>
+                </fieldset>
+            </div>
         </div>
 
-        <!-- Filter Types -->
-        <div id="filterTypeArea">
-            <fieldset id="foodType" class="filter-wrapper">
-                <div class="filter__intro">
-                    <legend class="filter__intro-title">Food Type</legend>
-                    <span class="filter__intro-line"></span>
-                    <button class="filter__intro-edit" type="button" id="add-type">Edit Type</button>
-                </div>
-                <div id="typeArea" class="filter__items"></div>
-                <form id="newTypeForm" class="newTypeForm">
-                    <input id="newTypeInput" class="newTypeInput" name="newType" type="text"><button>+</button>
-                </form>
-                <!-- <input type="radio" id="any" name="foodType" value="any" checked><label for="anyType">Any</label>
-                    <input type="radio" id="toppedRice" name="foodType" value="toppedRice"><label for="toppedRice">Topped Rice</label>
-                    <input type="radio" id="grilled" name="foodType" value="grilled"><label for="grilled">Grilled</label>
-                    <input type="radio" id="noodles" name="foodType" value="noodles"><label for="noodles">Noodles</label> -->
-            </fieldset>
-        </div>
 
         <!-- Result -->
         <div class="recipe-list">
-            <h2 class="recipe-list__title">Saved Recipes</h2>
+            <h2 class="recipe-list__title">My Recipes</h2>
             <ul class="recipe-list__result" id="recipesArea"> </ul>
         </div>
     </div>

@@ -58,11 +58,9 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
         // db에서 오류라고 판단하면 loginInfo는 error 오브젝트가 됨.
         // if the inputs are invalid, loginInfo is 'errors' object.
         document.querySelector('#errorMessage').innerHTML =''
-        
-        console.log(loginInfo)
+
         if(loginInfo.code === 11000) {
             showError('#errorMessage', 'The email is already registered.')
-
         }
         if(loginInfo.email) {
             showError('#errorMessage', 'Woops! Email is invalid.')

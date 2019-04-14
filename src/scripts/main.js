@@ -66,11 +66,11 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
 
     if (editFilter.state === 'off') {
         editFilter.state = 'on'
-        editFilterBtn.textContent = 'Editing Done'
+        editFilterBtn.textContent = 'Done'
         renderIngreFilter(editFilter.state)
     } else if (editFilter.state === 'on') {
         editFilter.state = 'off'
-        editFilterBtn.textContent = 'Edit Filter'
+        editFilterBtn.textContent = 'Edit'
 
         fetch('http://localhost:3000/users/me/ingres', {
             method: 'post',
@@ -105,11 +105,11 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
 
     if (editType.state === 'off') {
         editType.state = 'on'
-        editTypeBtn.textContent = 'Editing Done'
+        editTypeBtn.textContent = 'Done'
         renderTypeFilter(editType.state)
     } else if (editType.state === 'on') {
         editType.state = 'off'
-        editTypeBtn.textContent = 'Edit Type'
+        editTypeBtn.textContent = 'Edit'
 
         const currentType = JSON.parse(localStorage.getItem('filterTypes'))
         const updatedTypes = currentType.map(type => {

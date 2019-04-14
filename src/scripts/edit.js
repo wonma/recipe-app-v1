@@ -41,6 +41,13 @@ const renderTypeFilter = () => {
     })
 }
 
+function handleError(text) {
+    const errorBox = document.querySelector('#edit__error-msg')
+    const errorText = document.createElement('p')
+    errorBox.innerHTML = ''
+    errorText.textContent = text
+    errorBox.appendChild(errorText)
+}
 
 // Initiating 'Main Ingre' (DOM)
 const generateIngreDOM = (ingre, type) => {
@@ -59,7 +66,9 @@ const generateIngreDOM = (ingre, type) => {
         ingreLi.setAttribute('id', 'subIngre')
     }
     nameEl.setAttribute('placeholder', 'name')
+    nameEl.setAttribute('maxlength', '15')
     amountEl.setAttribute('placeholder', 'amount')
+    nameEl.setAttribute('maxlength', '15')
 
     nameEl.addEventListener('change', (e) => {
         console.log(e)
@@ -227,41 +236,35 @@ document.querySelector('#addSubIngre').addEventListener('click', () => {
     localStorage.setItem(`subIngre`, JSON.stringify(theIngres.subIngre))
 })
 
-
+///////////////// Make error box disappear when any part of the form is clicked.
+document.querySelector('#edit-form').addEventListener('click', () => {
+    const errorBox = document.querySelector('#edit__error-msg')
+    errorBox.innerHTML = ''
+})
 
 ///////////////// Button - Save (Create New)
 document.querySelector('#edit-form').addEventListener('submit', (e) => {
     e.preventDefault()
 
-    const body = {
-        title: e.target.elements.editTitle.value,
-        type: e.target.elements.editType.value,
-        serving: e.target.elements.editServing.value,
-        text: e.target.elements.editBody.value,
-        mainIngre: [],
-        subIngre: []
-    }
-
-
     try {
-        document.querySelectorAll('#mainIngre')
-        // 이렇게 셀렉 가능하긴 함: document.querySelector('#subIngreArea').children
-        // Array.from(e.target.children.mainIngres.children.mainIngreArea.children).forEach((each) => {
-        //     const name = each.children[0].value
-        //     const amount = each.children[1].value
-        //     if (name.length === 0 || amount.length === 0) {
-        //         throw new Error('The ingre should be full')
-        //     }
-        //     body.mainIngre.push({
-        //         name,
-        //         amount
-        //     })
-        // })
+        const body = {
+            title: e.target.elements.editTitle.value,
+            type: e.target.elements.editType.value,
+            serving: e.target.elements.editServing.value,
+            text: e.target.elements.editBody.value,
+            mainIngre: [],
+            subIngre: []
+        }
+
+        if (body.title.length === 0) {
+            throw new Error('empty title')
+        }
+
         document.querySelectorAll('#mainIngre').forEach((each) => {
-            const name = each.children[0].value
-            const amount = each.children[1].value
-            if (name.length === 0 || amount.length === 0) {
-                throw new Error('The ingre should be full')
+            const name = each.children[0].value.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
+            const amount = each.children[1].value.toLowerCase().trim().replace(/ +/g, ' ')
+            if (name.length === 0) {
+                throw new Error('empty Ingre')
             }
             body.mainIngre.push({
                 name,
@@ -270,10 +273,10 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
         })
 
         document.querySelectorAll('#subIngre').forEach((each) => {
-            const name = each.children[0].value
-            const amount = each.children[1].value
-            if (name.length === 0 || amount.length === 0) {
-                throw new Error('The ingre should be full')
+            const name = each.children[0].value.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
+            const amount = each.children[1].value.toLowerCase().trim().replace(/ +/g, ' ')
+            if (name.length === 0) {
+                throw new Error('empty Ingre')
             }
             body.subIngre.push({
                 name,
@@ -281,6 +284,9 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
             })
         })
 
+        if (body.text.length === 0) {
+            throw new Error('empty body')
+        }
 
         if (pageMode === 'createMode') {
             fetch(`http://localhost:3000/recipes/`, {
@@ -291,14 +297,13 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
                 },
                 body: JSON.stringify(body)
             })
-                // .then(response => response.json())
-                .then((res) => {
-                    console.log(res)
-                    location.assign(`/main.html`)
+            .then((res) => {
+                console.log(res)
+                location.assign(`/main.html`)
 
-                }).catch((e) => {
-                    console.log('Hmm fetch failed')
-                })
+            }).catch((e) => {
+                console.log('Hmm fetch failed')
+            })
 
         } else {
             fetch(`http://localhost:3000/recipes/${recipeID}`, {
@@ -321,7 +326,13 @@ document.querySelector('#edit-form').addEventListener('submit', (e) => {
 
 
     } catch (e) {
-        console.log(e)
+        if (e.message === 'empty title') {
+            handleError('Title is empty.')
+        } else if (e.message === 'empty Ingre') {
+            handleError('Fill out the ingredient name(s).')
+        } else if (e.message === 'empty body') {
+            handleError('Directions area is empty.')
+        } 
     }
 })
 
@@ -344,9 +355,3 @@ document.querySelector('#edit-delete').addEventListener('click', (e) => {
         })
     }
 })
-
-
-// // 'Cancel' button
-// document.querySelector('#edit-cancel').addEventListener('click', () => {
-//     location.assign(`/main.html`)
-// })

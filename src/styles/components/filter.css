@@ -1,29 +1,38 @@
-.filter {
-    width: 100%;
+.filters {
     margin-top: 2rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 6px 0px;
+    border-radius: 4px;
+    padding: 0rem 2rem;
+}
 
+.filter {
     &-wrapper {
         border: none;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
 
     &__intro {
         display: flex;
         align-items: center;
         margin-bottom: 1.4rem;
+
         &-title {
             flex-grow: 0;
+            font-size: 1.6rem;
             color: var(--color-primary);
             font-weight: 400;
         }
 
-        &-line {
-            flex-grow: 1;
-            background-color: var(--color-primary);
-            height: 1px;
-            margin: 0 1rem;
-        }
-
         &-edit {
+            cursor: pointer;
+            border: none;
+            padding: 1rem;
+            /* color:#fff;
+            background-color: var(--color-primary); */
+            border-radius: 4px;
+            margin-left: 1rem;
             flex-grow: 0;
         }
     }
@@ -71,7 +80,13 @@
 
         &:hover{
             cursor: pointer;
+            border: 1px solid var(--color-primary);
+            
+            .isEditOn &{
+               border: 1px solid var(--color-grey-light-3);
+            }
         }
+
     }
 
     &__item--edit > &__name {
@@ -94,6 +109,7 @@
         border-radius: 50%;
         top: 50%;
         transform: translateY(-50%);
+        cursor: pointer;
     }
 
     
@@ -107,7 +123,7 @@
 
 .newIngreForm, .newTypeForm {
     display: none;
-    width: 50%;
+    width: 100%;
     border: 1px solid var(--color-grey-light-3);
     border-radius: 4px;
     position: relative;
@@ -131,6 +147,7 @@
     padding: 1.5rem 0rem;
     border: none;
     width: 100%;
+    font-size: 1.6rem;
     &:focus {
         outline: none;
     }
