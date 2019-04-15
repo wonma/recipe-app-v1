@@ -1,8 +1,12 @@
+//-----------------------   Sign-up Modal   -----------------------//
 const modal = document.querySelector('#modal')
+
+// 'No id? create here!' link --> Open Sign-up
 document.getElementById('open-modal').addEventListener('click', () => {
     modal.classList.add('modal--is-visible')
 })
 
+// 'X' icon in modal --> Close Sign-up
 document.getElementById('modal-close').addEventListener('click', () => {
     modal.classList.remove('modal--is-visible')
 })
@@ -15,10 +19,35 @@ const showError = function (area, message) {
     errorArea.append(errorMessage)
 }
 
+const fillLocalStorage = function (loginInfo) {
+    // [1] x-auth
+    if (typeof loginInfo.token === 'string') { // the value shouldn't be 'undefined'
+        localStorage.setItem('x-auth', loginInfo.token)
+    } else {
+        return
+    }
+    // [2] user
+    localStorage.setItem('user', loginInfo.user.name)
+
+    // [3] filterIngre
+    const filterIngre = loginInfo.user.filterIngre.map((ingre) => {
+        return { 'name': ingre, 'chosen': false }
+    })
+    localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+
+    // [4] filterType
+    const filterType = loginInfo.user.filterType.map((type) => {
+        return type === 'any' ? { 'name': type, 'chosen': true } : { 'name': type, 'chosen': false }
+    })
+    localStorage.setItem('filterTypes', JSON.stringify(filterType))
+}
+
+
+
+//-----------------------  POST /users REQUEST  -----------------------//
 document.querySelector('#register-form').addEventListener('submit', (e) => {
     e.preventDefault()
     const [userName, email, password, passwordConfirm] = e.target.elements
-
     const validChars = /^([a-zA-Z0-9_\-]*)$/  // No special character, no space allowed
 
     // When nothing has been typed
@@ -37,8 +66,7 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
     } else if (password.value.length < 6) {
         showError('#errorMessage', 'Password should be at least 6 characters.')
         return false
-    }
-      else if (password.value !== passwordConfirm.value) {
+    } else if (password.value !== passwordConfirm.value) {
         showError('#errorMessage', 'Please type your password again.')
         return false
     } 
@@ -54,11 +82,10 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
         })
     })
     .then(response => response.json())
-    .then(loginInfo => {
-        // db에서 오류라고 판단하면 loginInfo는 error 오브젝트가 됨.
-        // if the inputs are invalid, loginInfo is 'errors' object.
+    .then(loginInfo => {    // if the inputs are invalid, 'loginInfo' becomes 'errors' object.
+        
+        //-----------------------   Error Handling   -----------------------//
         document.querySelector('#errorMessage').innerHTML =''
-
         if(loginInfo.code === 11000) {
             showError('#errorMessage', 'The email is already registered.')
         }
@@ -68,25 +95,10 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
             showError('#errorMessage', 'Woops! Password is invalid.')
         }
 
-        if (typeof loginInfo.token === 'string') {
-            localStorage.setItem('x-auth', loginInfo.token)
-        } else {
-            return
-        }
-        localStorage.setItem('user', loginInfo.user.name)
+        // Populate localStorage(token, username, filterIngre, filterType)
+        fillLocalStorage(loginInfo)
 
-        // Populate localStroage key 'filterIngre'
-        const filterIngre = loginInfo.user.filterIngre.map((ingre) => {
-            return { 'name': ingre, 'chosen': false }
-        })
-        localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
-
-        // Populate localStroage key 'filterType'
-        const filterType = loginInfo.user.filterType.map((type) => {
-            return type === 'any' ? { 'name': type, 'chosen': true } : { 'name': type, 'chosen': false }
-        })
-        localStorage.setItem('filterTypes', JSON.stringify(filterType))
-
+        // Router Change to Main Page
         location.assign(`/main.html`)
     })
     .catch(err => console.log(err))
@@ -95,8 +107,6 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
 
 document.querySelector('#login-form').addEventListener('submit', (e) => {
     e.preventDefault()
-    document.querySelector('#loginError').innerHTML = ''
-
     const [email, password] = e.target.elements
     
     fetch('http://localhost:3000/users/login', {
@@ -108,6 +118,8 @@ document.querySelector('#login-form').addEventListener('submit', (e) => {
         })
     }).then(response => response.json())
         .then(loginInfo => {
+            //-----------------------   Error Handling   -----------------------//
+            document.querySelector('#loginError').innerHTML = ''
             if (loginInfo.message ==='No existing user') {
                 showError('#loginError', `The email is not registered.`)
                 return false
@@ -116,21 +128,10 @@ document.querySelector('#login-form').addEventListener('submit', (e) => {
                 return false
             }
             
-            localStorage.setItem('x-auth', loginInfo.token)
-            localStorage.setItem('user', loginInfo.user.name)
+            // Populate localStorage(token, username, filterIngre, filterType)
+            fillLocalStorage(loginInfo)
 
-            // Populate localStroage key 'filterIngre'
-            const filterIngre = loginInfo.user.filterIngre.map((ingre) => {
-                return { 'name': ingre, 'chosen': false }
-            })
-            localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
-
-            // Populate localStroage key 'filterType'
-            const filterType = loginInfo.user.filterType.map((type) => {
-                return type === 'any' ? { 'name': type, 'chosen': true } : { 'name': type, 'chosen': false }
-            })
-            localStorage.setItem('filterTypes', JSON.stringify(filterType))
-
+            // Router Change to Main Page
             location.assign(`/main.html`)
         })
         .catch(err => {console.log(err)})

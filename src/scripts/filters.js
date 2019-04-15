@@ -217,48 +217,44 @@ const renderTypeFilter = (editState) => {
 }
 
 
-// submit 누르면 fitlerIngre 데이터박스에 push됨
-// default로는 hidden상태임
-const newFilterIngre = document.querySelector('#newIngreForm')
-const newIngreInput = document.querySelector('#newIngreInput')
-newFilterIngre.addEventListener('submit', (e) => {
-    e.preventDefault()
-    // trim하고 연속띄어쓰기를 single로바꾸고 띄어쓰기를 '-'로 전환하기
-    const inputText = e.target.elements.newIngre.value.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
 
-    if(inputText.length > 0) {
-        filterIngre.push({
-            name: inputText,
+const addFilterItem = (filter) => {
+    let Item;
+    filter === 'ingre' ? Item = 'Ingre' : Item = 'Type'
+
+    document.querySelector(`#new${Item}Form`).addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        const inputText = filter === 'ingre' ? e.target.elements.newIngre.value : e.target.elements.newType.value
+        const revisedInput = inputText.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
+        
+        if (revisedInput == 0) {return false}
+        const newItem = {
+            name: revisedInput,
             chosen: false
-        })
-        localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+        }
 
-        newIngreInput.value = ''
-        renderIngreFilter(editFilter.state)
-    }
-})
+        if(filter === 'ingre') {
+            filterIngre.push(newItem)  
+            localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+            renderIngreFilter(editFilter.state)
+        } else {
+            filterTypes.push(newItem)  
+            localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
+            renderTypeFilter(editType.state)
+        }
+        document.querySelector(`#new${Item}Input`).value = ''
+    })
+}
 
-// Adding New Filter Type 
-const newTypeForm = document.querySelector('#newTypeForm')
-const newTypeInput = document.querySelector('#newTypeInput')
-newTypeForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    const newTypeName = e.target.elements.newType.value.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
-    if (newTypeName.length > 0) {
-        filterTypes.push({
-            name: newTypeName,
-            chosen: false
-        })
-        localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
-        newTypeInput.value = ''
-        renderTypeFilter(editType.state)
-    } else {
-        // 경고문 띄우는거 해야함
-    }
+addFilterItem('ingre')
+addFilterItem('type')
 
 
 
-})
+
+
+
 
 
 export {renderIngreFilter, editFilter, getFilterIngre, getFilterType, 

@@ -22,8 +22,12 @@
 		height: 70vh;
 		padding: 2rem;
 		top:6rem;
-		
 		background-color: rgba(255,255,255, 1);
+		@mixin atLarge {
+			width:50%;
+			left:50%;
+			transform: translateX(-50%);
+		}
 	} 
 
 	&__btn-close {
