@@ -1,5 +1,5 @@
 import { renderList } from './mainRender'
-import { renderItemFilter, chosenType, editFilter, editType, pickType } from './filters'
+import { renderItemFilter, chosenType, editState, pickType } from './filters'
 
 
 const token = localStorage.getItem('x-auth')
@@ -12,8 +12,8 @@ const username = localStorage.getItem('user')
 document.querySelector('#username').textContent = username
 
 
-renderItemFilter(editFilter.state, 'ingre')
-renderItemFilter(editType.state, 'type')
+renderItemFilter(editState.ingre, 'ingre')
+renderItemFilter(editState.type, 'type')
 
 let getRecipes = []
 
@@ -48,7 +48,7 @@ fetch('http://localhost:3000/recipes', {
         document.querySelector('#foodType').addEventListener('change', (e) => {
             console.log('hahaha',e)
             pickType(e.target.value)
-            renderItemFilter(editFilter.state, 'type')
+            renderItemFilter(editState.ingre, 'type')
             renderList(recipes)
         })
     })
@@ -58,12 +58,12 @@ fetch('http://localhost:3000/recipes', {
 document.querySelector('#add-ingre').addEventListener('click', (e) => {
     const editFilterBtn = document.querySelector('#add-ingre')
 
-    if (editFilter.state === 'off') {
-        editFilter.state = 'on'
+    if (editState.ingre === 'off') {
+        editState.ingre = 'on'
         editFilterBtn.textContent = 'Done'
-        renderItemFilter(editFilter.state, 'ingre')
-    } else if (editFilter.state === 'on') {
-        editFilter.state = 'off'
+        renderItemFilter(editState.ingre, 'ingre')
+    } else if (editState.ingre === 'on') {
+        editState.ingre = 'off'
         editFilterBtn.textContent = 'Edit'
 
         fetch('http://localhost:3000/users/me/ingres', {
@@ -76,7 +76,7 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
         })
             .then(response => response.json())
             .then((filterIngre) => {
-                renderItemFilter(editFilter.state, 'ingre')
+                renderItemFilter(editState.ingre, 'ingre')
 
                 // reset rendered list
                 const currentIngre = JSON.parse(localStorage.getItem('filterIngre'))
@@ -97,12 +97,12 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
 document.querySelector('#add-type').addEventListener('click', (e) => {
     const editTypeBtn = document.querySelector('#add-type')
 
-    if (editType.state === 'off') {
-        editType.state = 'on'
+    if (editState.type === 'off') {
+        editState.type = 'on'
         editTypeBtn.textContent = 'Done'
-        renderItemFilter(editType.state, 'type')
-    } else if (editType.state === 'on') {
-        editType.state = 'off'
+        renderItemFilter(editState.type, 'type')
+    } else if (editState.type === 'on') {
+        editState.type = 'off'
         editTypeBtn.textContent = 'Edit'
 
         const currentType = JSON.parse(localStorage.getItem('filterTypes'))
@@ -130,7 +130,7 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
                 // 문제는 여기에 있었다. type filter 렌더링을 좌지우지하는건 localStorage가 아니라
                 // chosenType이었다.
                 chosenType.type ='any'
-                renderItemFilter(editFilter.state, 'type')
+                renderItemFilter(editState.type, 'type')
                 renderList(getRecipes)
             })
             .catch((e) => {

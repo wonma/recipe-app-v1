@@ -1,12 +1,9 @@
 let filterIngre = []
 let filterTypes = []
 
-const editFilter = {
-    state: 'off'
-}
-
-const editType = {
-    state: 'off'
+const editState = {
+    ingre: 'off',
+    type: 'off'
 }
 
 // [Export to mainRender.js]
@@ -110,20 +107,23 @@ const getItemDOM = (itemName, editState, type) => {
             e.preventDefault()
 
             if(type === 'ingre') {
+                filterIngre = JSON.parse(localStorage.getItem('filterIngre'))
                 const itemIndex = filterIngre.findIndex((ingre) => {
                     return ingre.name === e.target.name
                 })
                 filterIngre.splice(itemIndex, 1)
                 localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
             } else if(type === 'type') {
+                filterTypes = JSON.parse(localStorage.getItem('filterTypes'))
+
                 const itemIndex = filterTypes.findIndex((type) => {
                     return type.name === e.target.name
                 })
                 filterTypes.splice(itemIndex, 1)
                 localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
             }
-            renderItemFilter(editType.state, type)            
 
+            renderItemFilter(editState, type)   
         })     
         itemForm.appendChild(newLabel)
         itemForm.appendChild(deleteItemBtn)
@@ -176,13 +176,15 @@ const handleAddFilter = (type) => {
         }
 
         if(type === 'ingre') {
+            filterIngre = JSON.parse(localStorage.getItem('filterIngre'))
             filterIngre.push(newItem)  
             localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
-            renderItemFilter(editFilter.state, type)
+            renderItemFilter(editState.ingre, type)
         } else {
+            filterTypes = JSON.parse(localStorage.getItem('filterTypes'))
             filterTypes.push(newItem)  
             localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
-            renderItemFilter(editType.state, type)
+            renderItemFilter(editState.type, type)
         }
         document.querySelector(`#new${Item}Input`).value = ''
     })
@@ -192,5 +194,5 @@ handleAddFilter('ingre')
 handleAddFilter('type')
 
 
-export {renderItemFilter, editFilter,  
-        filterTypes, editType, pickType, chosenType }
+export {renderItemFilter, editState,  
+        filterTypes, pickType, chosenType }
