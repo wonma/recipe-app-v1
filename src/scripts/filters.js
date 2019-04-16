@@ -24,6 +24,7 @@ const getFilterType = () => {
 // 선택된 type이름을 받아 chosenType에 넘기고, filterTypes어레이 정보도 업뎃함
 // [Export to main.js] 
 const pickType = (chosenName) => {
+    filterTypes = getFilterType()
     filterTypes.forEach((type) => {
         if (type.name === chosenName) {
             chosenType.type = chosenName
@@ -34,7 +35,7 @@ const pickType = (chosenName) => {
     })
 }
 
-// [2] Generate DOM
+// [2] Generate a single DOM for each filter item
 const getItemDOM = (itemName, editState, type) => {
     const itemForm = document.createElement('form')
     itemForm.classList.add('filter__item')
@@ -119,17 +120,16 @@ const getItemDOM = (itemName, editState, type) => {
                 })
                 filterIngre.splice(itemIndex, 1)
                 localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
-                renderIngreFilter(editFilter.state)
             } else if(type === 'type') {
                 const itemIndex = filterTypes.findIndex((type) => {
                     return type.name === e.target.name
                 })
                 filterTypes.splice(itemIndex, 1)
                 localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
-                renderTypeFilter(editType.state)            
             }
-        })     
+            renderItemFilter(editType.state, type)            
 
+        })     
         itemForm.appendChild(newLabel)
         itemForm.appendChild(deleteItemBtn)
     }
@@ -137,62 +137,39 @@ const getItemDOM = (itemName, editState, type) => {
     return itemForm
 }
 
+// [1] Render Filter Items
+const renderItemFilter = (editState, type) => {
+    
+    const filterItems = type === 'ingre' ? getFilterIngre() : getFilterType()
+    
+    const itemArea = document.querySelector(`#${type}Area`)
+    itemArea.innerHTML = ''
 
-
-
-// [1] Render Ingre Filter
-const renderIngreFilter = (editState) => {
-    filterIngre = getFilterIngre()
-
-    const ingreArea = document.querySelector('#ingreArea')
-    ingreArea.innerHTML = ''
-
-    filterIngre.forEach((ingre) => {
-        return ingreArea.appendChild(getItemDOM(ingre.name, editState, 'ingre'))
+    filterItems.forEach((item) => {
+        return itemArea.appendChild(getItemDOM(item.name, editState, type))
     })
 
-    const newIngreForm = document.querySelector('#newIngreForm')
+    const newItemForm = document.querySelector(`#new${type.charAt(0).toUpperCase() + type.slice(1)}Form`)
     const ingredients = document.querySelector('#ingredients')
 
     if (editState === 'on') {
-        ingredients.classList.add('isEditOn')
-        newIngreForm.classList.add('isEditOn')
+        if(type === 'ingre') {ingredients.classList.add('isEditOn')}
+        newItemForm.classList.add('isEditOn')
     } else if (editState === 'off') {
-        ingredients.classList.remove('isEditOn')
-        newIngreForm.classList.remove('isEditOn')
-    }
-}
-
-// Render Type Filter
-const renderTypeFilter = (editState) => {
-    filterTypes = getFilterType()
-
-    const typeArea = document.querySelector('#typeArea')
-    typeArea.innerHTML = ''
-
-    filterTypes.forEach((type) => {
-        return typeArea.appendChild(getItemDOM(type.name, editState, 'type'))
-    })
-
-    const newTypeForm = document.querySelector('#newTypeForm')
-
-    if (editState === 'on') {
-        newTypeForm.classList.add('isEditOn')
-    } else if (editState === 'off') {
-        newTypeForm.classList.remove('isEditOn')
+        if(type === 'ingre') {ingredients.classList.remove('isEditOn')}
+        newItemForm.classList.remove('isEditOn')
     }
 }
 
 
-
-const addFilterItem = (filter) => {
+const handleAddFilter = (type) => {
     let Item;
-    filter === 'ingre' ? Item = 'Ingre' : Item = 'Type'
+    type === 'ingre' ? Item = 'Ingre' : Item = 'Type'
 
     document.querySelector(`#new${Item}Form`).addEventListener('submit', (e) => {
         e.preventDefault()
 
-        const inputText = filter === 'ingre' ? e.target.elements.newIngre.value : e.target.elements.newType.value
+        const inputText = type === 'ingre' ? e.target.elements.newIngre.value : e.target.elements.newType.value
         const revisedInput = inputText.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
         
         if (revisedInput == 0) {return false}
@@ -201,28 +178,22 @@ const addFilterItem = (filter) => {
             chosen: false
         }
 
-        if(filter === 'ingre') {
+        if(type === 'ingre') {
             filterIngre.push(newItem)  
             localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
-            renderIngreFilter(editFilter.state)
+            renderItemFilter(editFilter.state, type)
         } else {
             filterTypes.push(newItem)  
             localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
-            renderTypeFilter(editType.state)
+            renderItemFilter(editType.state, type)
         }
         document.querySelector(`#new${Item}Input`).value = ''
     })
 }
 
-addFilterItem('ingre')
-addFilterItem('type')
+handleAddFilter('ingre')
+handleAddFilter('type')
 
 
-
-
-
-
-
-
-export {renderIngreFilter, editFilter, getFilterIngre, getFilterType, 
-        renderTypeFilter, filterTypes, editType, pickType, chosenType }
+export {renderItemFilter, editFilter, getFilterIngre, getFilterType, 
+        filterTypes, editType, pickType, chosenType }
