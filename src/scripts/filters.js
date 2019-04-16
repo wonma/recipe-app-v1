@@ -35,141 +35,107 @@ const pickType = (chosenName) => {
 }
 
 // [2] Generate DOM
-const getIngreDOM = (ingreName, editState) => {
-    const ingreForm = document.createElement('form')
-    ingreForm.classList.add('filter__item')
-    const ingreNameID = ingreName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
+const getItemDOM = (itemName, editState, type) => {
+    const itemForm = document.createElement('form')
+    itemForm.classList.add('filter__item')
+    const itemNameID = itemName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
+    
     if(editState === 'off') {
-        ingreForm.classList.add('filter__item')
-        // submit후 리스트 올라갈 '체크박스' 만들기
-        const createdIngre = document.createElement('input')
-        createdIngre.setAttribute('type', 'checkbox')
-        createdIngre.setAttribute('id', ingreNameID)
-        createdIngre.setAttribute('value', ingreNameID)
-        createdIngre.classList.add('filter__checkbox')
+        let inputType;
 
-        // 체크박스와 연결된 label만들기
-        const newLabel = document.createElement('label')
-        newLabel.setAttribute('for', ingreNameID)
-        newLabel.textContent = ingreNameID.charAt(0).toUpperCase() + ingreNameID.split('-').join(' ').slice(1);
-        newLabel.classList.add('filter__name')
-        newLabel.addEventListener('click', (e) => {
-            const checked = e.target.previousSibling.checked
-            if(checked) {
-                newLabel.classList.remove('filter__name--checked')
-            } else {
-                newLabel.classList.add('filter__name--checked')
+        if (type ==='ingre') {
+            inputType = 'checkbox'
+        } else {
+            inputType = 'radio'
+        }
+        // '체크박스' 또는 '라디오박스' 만들기
+        const createdItem = document.createElement('input')
+        createdItem.setAttribute('type', inputType)
+        createdItem.setAttribute('id', itemNameID)
+        createdItem.setAttribute('value', itemNameID)
+        createdItem.classList.add(`filter__${inputType}`)
+        if (type === 'type') {
+            createdItem.setAttribute('name', 'foodType')
+            if (chosenType.type === itemNameID) {
+                createdItem.setAttribute('checked', 'checked')
             }
-        })
-
-        // 두 요소 합쳐서 return
-        ingreForm.appendChild(createdIngre)
-        ingreForm.appendChild(newLabel)
-
-    } else if (editState === 'on') {
-        // ingreForm.classList.add('filter__item')
-        ingreForm.classList.add('filter__item--edit') // padding 조절되는 css추가됨
-        // 체크박스와 연결된 label만들기
-        const newLabel = document.createElement('label')
-        newLabel.setAttribute('for', ingreNameID)
-        newLabel.textContent = ingreNameID.charAt(0).toUpperCase() + ingreNameID.split('-').join(' ').slice(1);
-        newLabel.classList.add('filter__name')
-
-        // delete 버튼
-        const deleteIngreBtn = document.createElement('button')
-        deleteIngreBtn.setAttribute('name', ingreNameID)
-        deleteIngreBtn.textContent = '-'
-        deleteIngreBtn.classList.add('filter__delete')
-        deleteIngreBtn.addEventListener('click', (e) => {
-            e.preventDefault()
-            const ingreIndex = filterIngre.findIndex((ingre) => {
-                return ingre.name === e.target.name
-            })
-            filterIngre.splice(ingreIndex, 1)
-            localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
-            renderIngreFilter(editFilter.state)
-        })     
-
-        ingreForm.appendChild(newLabel)
-        ingreForm.appendChild(deleteIngreBtn)
-    }
-    
-    return ingreForm
-}
-
-
-// Generate Type DOM
-const getTypeDOM = (typeName, editState) => {
-    const typeForm = document.createElement('form')
-    typeForm.classList.add('filter__item')
-    // 띄어쓰기 부분은 '-'로 바꾸기
-    const typeNameID = typeName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
-    
-    if (editState === 'off') {
-        
-        // submit후 리스트 올라갈 '라디오박스' 만들기
-        const createdType = document.createElement('input')
-        createdType.setAttribute('type', 'radio')
-        createdType.setAttribute('id', typeNameID)
-        createdType.setAttribute('name', 'foodType')
-        createdType.setAttribute('value', typeNameID)
-        createdType.classList.add('filter__radio')
-
-        if (chosenType.type === typeNameID) {
-            createdType.setAttribute('checked', 'checked')
         }
 
-
-        // 체크박스와 연결된 label만들기
-        const psuedoRadio = document.createElement('span')
-        const labelText = document.createElement('span')
-        labelText.classList.add('filter__radio-label-text')
-
-        // '-'로 처리된 부분 띄어쓰기로 바꾸기
-        labelText.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
-        psuedoRadio.classList.add('psuedo-radio')
-
+        // 'label'만들기
         const newLabel = document.createElement('label')
-        newLabel.setAttribute('for', typeNameID)
-        newLabel.classList.add('filter__radio-label')
+        newLabel.setAttribute('for', itemNameID)
+        const revisedLabel = itemNameID.charAt(0).toUpperCase() + itemNameID.split('-').join(' ').slice(1)
+        
+        if(type === 'ingre') {
+            newLabel.textContent = revisedLabel
+            newLabel.classList.add('filter__name')
+            newLabel.addEventListener('click', (e) => {
+                const checked = e.target.previousSibling.checked
+                if (checked) {
+                    newLabel.classList.remove('filter__name--checked')
+                } else {
+                    newLabel.classList.add('filter__name--checked')
+                }
+            })
+        } else if(type === 'type') {
+            newLabel.classList.add('filter__radio-label')
 
-        // 두 요소 합쳐서 return
-        newLabel.appendChild(labelText)
-        newLabel.appendChild(psuedoRadio)
-        typeForm.appendChild(createdType)
-        typeForm.appendChild(newLabel)
+            const psuedoRadio = document.createElement('span')
+            const labelText = document.createElement('span')
+            labelText.textContent = revisedLabel
+            labelText.classList.add('filter__radio-label-text')
+            psuedoRadio.classList.add('psuedo-radio')
+
+            newLabel.appendChild(labelText)
+            newLabel.appendChild(psuedoRadio)
+        }
+
+        itemForm.appendChild(createdItem)
+        itemForm.appendChild(newLabel)
 
     } else if (editState === 'on') {
 
-        // 체크박스와 연결된 label만들기
-        typeForm.classList.add('filter__item--edit') // padding 조절되는 css추가됨
-        const newLabel = document.createElement('label')
-        newLabel.setAttribute('for', typeNameID)
-        newLabel.textContent = typeNameID.charAt(0).toUpperCase() + typeNameID.slice(1).split('-').join(' ')
-        newLabel.classList.add('filter__name') // filterIngre와 스타일이 같아짐
+        // padding 조절되는 css추가됨
+        itemForm.classList.add('filter__item--edit') 
         
+        // 체크박스와 연결된 label만들기
+        const newLabel = document.createElement('label')
+        newLabel.setAttribute('for', itemNameID)
+        newLabel.textContent = itemNameID.charAt(0).toUpperCase() + itemNameID.split('-').join(' ').slice(1);
+        newLabel.classList.add('filter__name')
+
         // delete 버튼
-        const deleteTypeBtn = document.createElement('button')
-        deleteTypeBtn.setAttribute('name', typeNameID)
-        deleteTypeBtn.textContent = '-'
-        deleteTypeBtn.classList.add('filter__delete')
+        const deleteItemBtn = document.createElement('button')
+        deleteItemBtn.setAttribute('name', itemNameID)
+        deleteItemBtn.textContent = '-'
+        deleteItemBtn.classList.add('filter__delete')
 
-        deleteTypeBtn.addEventListener('click', (e) => {
+        deleteItemBtn.addEventListener('click', (e) => {
             e.preventDefault()
-            const typeIndex = filterTypes.findIndex((type) => {
-                return type.name === e.target.name
-            })
-            filterTypes.splice(typeIndex, 1)
-            localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
-            renderTypeFilter(editType.state)
-        })
-        typeForm.appendChild(newLabel)
-        typeForm.appendChild(deleteTypeBtn)
+
+            if(type === 'ingre') {
+                const itemIndex = filterIngre.findIndex((ingre) => {
+                    return ingre.name === e.target.name
+                })
+                filterIngre.splice(itemIndex, 1)
+                localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+                renderIngreFilter(editFilter.state)
+            } else if(type === 'type') {
+                const itemIndex = filterTypes.findIndex((type) => {
+                    return type.name === e.target.name
+                })
+                filterTypes.splice(itemIndex, 1)
+                localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
+                renderTypeFilter(editType.state)            
+            }
+        })     
+
+        itemForm.appendChild(newLabel)
+        itemForm.appendChild(deleteItemBtn)
     }
-
-    return typeForm
+    
+    return itemForm
 }
-
 
 
 
@@ -182,7 +148,7 @@ const renderIngreFilter = (editState) => {
     ingreArea.innerHTML = ''
 
     filterIngre.forEach((ingre) => {
-        return ingreArea.appendChild(getIngreDOM(ingre.name, editState))
+        return ingreArea.appendChild(getItemDOM(ingre.name, editState, 'ingre'))
     })
 
     const newIngreForm = document.querySelector('#newIngreForm')
@@ -205,7 +171,7 @@ const renderTypeFilter = (editState) => {
     typeArea.innerHTML = ''
 
     filterTypes.forEach((type) => {
-        return typeArea.appendChild(getTypeDOM(type.name, editState))
+        return typeArea.appendChild(getItemDOM(type.name, editState, 'type'))
     })
 
     const newTypeForm = document.querySelector('#newTypeForm')
