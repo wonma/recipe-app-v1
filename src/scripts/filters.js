@@ -14,17 +14,12 @@ const chosenType = {
     type: 'any'
 }
 
-const getFilterIngre = () => {
-    return JSON.parse(localStorage.getItem('filterIngre'))
-}
-const getFilterType = () => {
-    return JSON.parse(localStorage.getItem('filterTypes'))
-}
+
 
 // 선택된 type이름을 받아 chosenType에 넘기고, filterTypes어레이 정보도 업뎃함
 // [Export to main.js] 
 const pickType = (chosenName) => {
-    filterTypes = getFilterType()
+    filterTypes = JSON.parse(localStorage.getItem('filterTypes'))
     filterTypes.forEach((type) => {
         if (type.name === chosenName) {
             chosenType.type = chosenName
@@ -140,7 +135,9 @@ const getItemDOM = (itemName, editState, type) => {
 // [1] Render Filter Items
 const renderItemFilter = (editState, type) => {
     
-    const filterItems = type === 'ingre' ? getFilterIngre() : getFilterType()
+    const filterItems = type === 'ingre' 
+    ? JSON.parse(localStorage.getItem('filterIngre'))
+    : JSON.parse(localStorage.getItem('filterTypes'))
     
     const itemArea = document.querySelector(`#${type}Area`)
     itemArea.innerHTML = ''
@@ -195,5 +192,5 @@ handleAddFilter('ingre')
 handleAddFilter('type')
 
 
-export {renderItemFilter, editFilter, getFilterIngre, getFilterType, 
+export {renderItemFilter, editFilter,  
         filterTypes, editType, pickType, chosenType }

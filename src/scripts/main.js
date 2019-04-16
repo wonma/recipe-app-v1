@@ -1,5 +1,5 @@
 import { renderList } from './mainRender'
-import { getFilterIngre, renderItemFilter, chosenType, editFilter, editType, pickType } from './filters'
+import { renderItemFilter, chosenType, editFilter, editType, pickType } from './filters'
 
 
 const token = localStorage.getItem('x-auth')
@@ -34,7 +34,7 @@ fetch('http://localhost:3000/recipes', {
 
         // Re-render with ingredients to filter checked
         document.querySelector('#ingredients').addEventListener('change', (e)=> {
-            const filterIngre = getFilterIngre()
+            const filterIngre = JSON.parse(localStorage.getItem('filterIngre'))
             filterIngre.forEach((ingre) => {
                 if (ingre.name === e.target.value) {
                     ingre.chosen = e.target.checked  // filter ingre선택여부 true로 바뀌게 됨
@@ -46,7 +46,6 @@ fetch('http://localhost:3000/recipes', {
 
         // Re-render with food type filter checked
         document.querySelector('#foodType').addEventListener('change', (e) => {
-            // const filterType = getFilterType()
             console.log('hahaha',e)
             pickType(e.target.value)
             renderItemFilter(editFilter.state, 'type')
