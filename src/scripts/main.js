@@ -54,6 +54,60 @@ fetch('http://localhost:3000/recipes', {
     })
     .catch(err => console.log('Failed to fetch')) 
 
+const addFilterItem = (editState, filterName) => {
+    let items;
+
+    if(filterName === 'ingre') {
+        items = { filterIngre: JSON.parse(localStorage.getItem('filterIngre')) }
+    } else {
+        const currentType = JSON.parse(localStorage.getItem('filterTypes'))
+        const updatedTypes = currentType.map(type => {
+            if (type.name === "any") {
+                return { name: type.name, chosen: true }
+            } else {
+                return { name: type.name, chosen: false }
+            }
+        })
+        items = { filterTypes: updatedTypes }
+        console.log('haha')
+    }
+
+    fetch(`http://localhost:3000/users/me/${filterName + 's'}`, {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth': token
+        },
+        body: JSON.stringify(items)
+    })
+        .then(response => response.json())
+        .then((filterItems) => {
+            // reset rendered list
+            if (filterName === 'ingre') {
+                const currentIngre = JSON.parse(localStorage.getItem('filterIngre'))
+                const updatedIngre = currentIngre.map(ingre => {
+                    return { name: ingre.name, chosen: false }
+                })
+                localStorage.setItem('filterIngre', JSON.stringify(updatedIngre))
+            } else {
+                chosenType.type = 'any'
+                const updatedTypes = filterItems.map(type => {
+                    if (type === "any") {
+                        return { name: type, chosen: true }
+                    } else {
+                        return { name: type, chosen: false }
+                    }
+                })
+                localStorage.setItem('filterTypes', JSON.stringify(updatedTypes))
+            }
+            renderItemFilter(editState, filterName)
+            renderList(getRecipes)
+        })
+        .catch((e) => {
+            console.log('Error from front')
+        })
+}
+
 // Ingredient filter button
 document.querySelector('#add-ingre').addEventListener('click', (e) => {
     const editIngreBtn = document.querySelector('#add-ingre')
@@ -66,32 +120,11 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
         editState.ingre = 'off'
         editIngreBtn.textContent = 'Edit'
 
-        fetch('http://localhost:3000/users/me/ingres', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-auth': token
-            },
-            body: JSON.stringify({ filterIngre: JSON.parse(localStorage.getItem('filterIngre'))})
-        })
-            .then(response => response.json())
-            .then((filterIngre) => {
-                // reset rendered list
-                const currentIngre = JSON.parse(localStorage.getItem('filterIngre'))
-                const updatedIngre = currentIngre.map(ingre => {
-                    return {name: ingre.name, chosen: false}
-                })
-                localStorage.setItem('filterIngre', JSON.stringify(updatedIngre))
-                renderItemFilter(editState.ingre, 'ingre')
-                renderList(getRecipes)
-            })
-            .catch((e) => {
-                console.log('Error from front')
-            })
+        addFilterItem(editState.ingre, 'ingre')
     }
 })
 
-// Type filter button
+
 document.querySelector('#add-type').addEventListener('click', (e) => {
     const editTypeBtn = document.querySelector('#add-type')
 
@@ -103,36 +136,53 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
         editState.type = 'off'
         editTypeBtn.textContent = 'Edit'
 
-        const currentType = JSON.parse(localStorage.getItem('filterTypes'))
-        const updatedTypes = currentType.map(type => {
-            if (type.name === "any") {
-                return { name: type.name, chosen: true }
-            } else {
-                return { name: type.name, chosen: false }
-            }
-        })
-
-        fetch('http://localhost:3000/users/me/types', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-auth': token
-            },
-            body: JSON.stringify({ filterTypes: updatedTypes })
-        })
-            .then(response => response.json())
-            .then((filterTypes) => {
-                // reset rendered list
-                chosenType.type ='any'
-                localStorage.setItem('filterTypes', JSON.stringify(updatedTypes))
-                renderItemFilter(editState.type, 'type')
-                renderList(getRecipes)
-            })
-            .catch((e) => {
-                console.log('Error from front')
-            })
+        addFilterItem(editState.type, 'type')
     }
 })
+
+
+// Type filter button
+// document.querySelector('#add-type').addEventListener('click', (e) => {
+//     const editTypeBtn = document.querySelector('#add-type')
+
+//     if (editState.type === 'off') {
+//         editState.type = 'on'
+//         editTypeBtn.textContent = 'Done'
+//         renderItemFilter(editState.type, 'type')
+//     } else if (editState.type === 'on') {
+//         editState.type = 'off'
+//         editTypeBtn.textContent = 'Edit'
+
+//         const currentType = JSON.parse(localStorage.getItem('filterTypes'))
+//         const updatedTypes = currentType.map(type => {
+//             if (type.name === "any") {
+//                 return { name: type.name, chosen: true }
+//             } else {
+//                 return { name: type.name, chosen: false }
+//             }
+//         })
+
+//         fetch('http://localhost:3000/users/me/types', {
+//             method: 'post',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'x-auth': token
+//             },
+//             body: JSON.stringify({ filterTypes: updatedTypes })
+//         })
+//             .then(response => response.json())
+//             .then((filterTypes) => {
+//                 // reset rendered list
+//                 chosenType.type ='any'
+//                 localStorage.setItem('filterTypes', JSON.stringify(updatedTypes))
+//                 renderItemFilter(editState.type, 'type')
+//                 renderList(getRecipes)
+//             })
+//             .catch((e) => {
+//                 console.log('Error from front')
+//             })
+//     }
+// })
 
 // Log out 
 document.querySelector('#logout').addEventListener('click', (e) => {

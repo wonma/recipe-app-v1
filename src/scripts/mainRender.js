@@ -126,9 +126,6 @@ const filterRecipe = (recipes) => {
                 each.includes(ingre) ? matchedList.push(true) : matchedList.push(false)
             })
         })
-        console.log(mainIngresInOne)
-        console.log(chosenIngres)
-        console.log(matchedList)
 
         // Sub Ingredient (matching each to chosen ingredients)
         let subMatchedList = [] //eg. beef를 선택했을 경우 Tomato Past만 [false, false, true, false, false] 즉 25% sub ingre 매칭률
@@ -206,7 +203,6 @@ const renderList = (recipes) => {
     recipesArea.innerHTML = ''
 
     // (필터 사용 관계 없이 일단,) recipes가 비었으면 '결과 없음'을 렌더하고 function 종료.
-    // console.log(recipes)
     if (recipes.length <= 0) {
         const noResultEl = document.createElement('p')
         noResultEl.textContent = 'No result'
@@ -215,7 +211,6 @@ const renderList = (recipes) => {
     }
     // recipes를 필터링해온다 (-> STEP.2)
     const filteredRecipes = filterRecipe(recipes)
-    console.log(filteredRecipes.length)
     if (filteredRecipes.length > 0) {
         filteredRecipes.forEach((recipe) => {
             return recipesArea.appendChild(getRecipeDOM(recipe))
