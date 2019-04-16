@@ -37,6 +37,7 @@ const pickType = (chosenName) => {
 // [2] Generate DOM
 const getIngreDOM = (ingreName, editState) => {
     const ingreForm = document.createElement('form')
+    ingreForm.classList.add('filter__item')
     const ingreNameID = ingreName.toLowerCase().trim().replace(/ +/g, ' ').split(' ').join('-')
     if(editState === 'off') {
         ingreForm.classList.add('filter__item')
@@ -66,7 +67,7 @@ const getIngreDOM = (ingreName, editState) => {
         ingreForm.appendChild(newLabel)
 
     } else if (editState === 'on') {
-        ingreForm.classList.add('filter__item')
+        // ingreForm.classList.add('filter__item')
         ingreForm.classList.add('filter__item--edit') // padding 조절되는 css추가됨
         // 체크박스와 연결된 label만들기
         const newLabel = document.createElement('label')
