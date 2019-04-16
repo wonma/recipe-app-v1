@@ -1,63 +1,27 @@
 import { renderList } from './mainRender'
 import { renderItemFilter, chosenType, editState, pickType } from './filters'
 
-
+//--------------------   Token & Username   --------------------//
 const token = localStorage.getItem('x-auth')
-
-if(!token) {
-    location.assign('index.html')
-}
-
 const username = localStorage.getItem('user')
+
+// Block access if without token
+if(!token) {location.assign('index.html')}
+
+// Display Username
 document.querySelector('#username').textContent = username
 
 
+//-----------------------   Filters   -----------------------//
+
+// Render filters
 renderItemFilter(editState.ingre, 'ingre')
 renderItemFilter(editState.type, 'type')
-
-let getRecipes = []
-
-fetch('http://localhost:3000/recipes', {
-        method: 'get',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-auth': token
-        }
-})
-    .then(response => response.json())
-    .then((res) => {
-        renderList(res.recipes)
-        getRecipes = res.recipes
-        return res.recipes
-    })
-    .then((recipes) => {
-
-        // Re-render with ingredients to filter checked
-        document.querySelector('#ingredients').addEventListener('change', (e)=> {
-            const filterIngre = JSON.parse(localStorage.getItem('filterIngre'))
-            filterIngre.forEach((ingre) => {
-                if (ingre.name === e.target.value) {
-                    ingre.chosen = e.target.checked  // filter ingre선택여부 true로 바뀌게 됨
-                }
-            })
-            localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
-            renderList(recipes) // filter할 아템은 계속 filterIngre 어레이오브젝트 참고하게됨
-        })
-
-        // Re-render with food type filter checked
-        document.querySelector('#foodType').addEventListener('change', (e) => {
-            console.log('hahaha',e)
-            pickType(e.target.value)
-            renderItemFilter(editState.ingre, 'type')
-            renderList(recipes)
-        })
-    })
-    .catch(err => console.log('Failed to fetch')) 
 
 const addFilterItem = (editState, filterName) => {
     let items;
 
-    if(filterName === 'ingre') {
+    if (filterName === 'ingre') {
         items = { filterIngre: JSON.parse(localStorage.getItem('filterIngre')) }
     } else {
         const currentType = JSON.parse(localStorage.getItem('filterTypes'))
@@ -69,7 +33,6 @@ const addFilterItem = (editState, filterName) => {
             }
         })
         items = { filterTypes: updatedTypes }
-        console.log('haha')
     }
 
     fetch(`http://localhost:3000/users/me/${filterName + 's'}`, {
@@ -108,7 +71,7 @@ const addFilterItem = (editState, filterName) => {
         })
 }
 
-// Ingredient filter button
+// Edit Ingre Filter
 document.querySelector('#add-ingre').addEventListener('click', (e) => {
     const editIngreBtn = document.querySelector('#add-ingre')
 
@@ -124,7 +87,7 @@ document.querySelector('#add-ingre').addEventListener('click', (e) => {
     }
 })
 
-
+// Edit Type Filter
 document.querySelector('#add-type').addEventListener('click', (e) => {
     const editTypeBtn = document.querySelector('#add-type')
 
@@ -141,48 +104,48 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
 })
 
 
-// Type filter button
-// document.querySelector('#add-type').addEventListener('click', (e) => {
-//     const editTypeBtn = document.querySelector('#add-type')
+//-----------------------   Recipes   -----------------------//
 
-//     if (editState.type === 'off') {
-//         editState.type = 'on'
-//         editTypeBtn.textContent = 'Done'
-//         renderItemFilter(editState.type, 'type')
-//     } else if (editState.type === 'on') {
-//         editState.type = 'off'
-//         editTypeBtn.textContent = 'Edit'
+let getRecipes = []
 
-//         const currentType = JSON.parse(localStorage.getItem('filterTypes'))
-//         const updatedTypes = currentType.map(type => {
-//             if (type.name === "any") {
-//                 return { name: type.name, chosen: true }
-//             } else {
-//                 return { name: type.name, chosen: false }
-//             }
-//         })
+fetch('http://localhost:3000/recipes', {
+        method: 'get',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth': token
+        }
+})
+    .then(response => response.json())
+    .then((res) => {
+        renderList(res.recipes)
+        getRecipes = res.recipes
+        return res.recipes
+    })
+    .then((recipes) => {
 
-//         fetch('http://localhost:3000/users/me/types', {
-//             method: 'post',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'x-auth': token
-//             },
-//             body: JSON.stringify({ filterTypes: updatedTypes })
-//         })
-//             .then(response => response.json())
-//             .then((filterTypes) => {
-//                 // reset rendered list
-//                 chosenType.type ='any'
-//                 localStorage.setItem('filterTypes', JSON.stringify(updatedTypes))
-//                 renderItemFilter(editState.type, 'type')
-//                 renderList(getRecipes)
-//             })
-//             .catch((e) => {
-//                 console.log('Error from front')
-//             })
-//     }
-// })
+        // Re-render with ingredients to filter checked
+        document.querySelector('#ingredients').addEventListener('change', (e)=> {
+            const filterIngre = JSON.parse(localStorage.getItem('filterIngre'))
+            filterIngre.forEach((ingre) => {
+                if (ingre.name === e.target.value) {
+                    ingre.chosen = e.target.checked  // filter ingre선택여부 true로 바뀌게 됨
+                }
+            })
+            localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
+            renderList(recipes) // filter할 아템은 계속 filterIngre 어레이오브젝트 참고하게됨
+        })
+
+        // Re-render with food type filter checked
+        document.querySelector('#foodType').addEventListener('change', (e) => {
+            pickType(e.target.value)
+            renderItemFilter(editState.ingre, 'type')
+            renderList(recipes)
+        })
+    })
+    .catch(err => console.log('Failed to fetch')) 
+
+
+//-----------------------   Buttons   -----------------------//
 
 // Log out 
 document.querySelector('#logout').addEventListener('click', (e) => {
@@ -199,7 +162,6 @@ document.querySelector('#logout').addEventListener('click', (e) => {
             
         })
 })
-
 
 // Creating new recipe button
 document.querySelector('#add-new').addEventListener('click', (e) => {

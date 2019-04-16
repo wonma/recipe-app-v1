@@ -1,16 +1,17 @@
 //-----------------------   Sign-up Modal   -----------------------//
 const modal = document.querySelector('#modal')
 
-// 'No id? create here!' link --> Open Sign-up
+// Open Sign-up
 document.getElementById('open-modal').addEventListener('click', () => {
     modal.classList.add('modal--is-visible')
 })
 
-// 'X' icon in modal --> Close Sign-up
+// Close Sign-up
 document.getElementById('modal-close').addEventListener('click', () => {
     modal.classList.remove('modal--is-visible')
 })
 
+//------------------  Functions for /users Request   -----------------------//
 const showError = function (area, message) {
     document.querySelector('#errorMessage').innerHTML = ''
     const errorArea = document.querySelector(area) // div
@@ -41,8 +42,6 @@ const fillLocalStorage = function (loginInfo) {
     })
     localStorage.setItem('filterTypes', JSON.stringify(filterType))
 }
-
-
 
 //-----------------------  POST /users REQUEST  -----------------------//
 document.querySelector('#register-form').addEventListener('submit', (e) => {
@@ -104,7 +103,7 @@ document.querySelector('#register-form').addEventListener('submit', (e) => {
     .catch(err => console.log(err))
 })
 
-
+//-----------------------  GET /users REQUEST  -----------------------//
 document.querySelector('#login-form').addEventListener('submit', (e) => {
     e.preventDefault()
     const [email, password] = e.target.elements
