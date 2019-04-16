@@ -11,12 +11,19 @@ const chosenType = {
     type: 'any'
 }
 
+const getFilterIngre = () => {
+    return JSON.parse(localStorage.getItem('filterIngre'))
+}
+const getFilterType = () => {
+    return JSON.parse(localStorage.getItem('filterTypes'))
+}
 
+filterIngre = getFilterIngre()
+filterTypes = getFilterType()
 
 // 선택된 type이름을 받아 chosenType에 넘기고, filterTypes어레이 정보도 업뎃함
 // [Export to main.js] 
 const pickType = (chosenName) => {
-    filterTypes = JSON.parse(localStorage.getItem('filterTypes'))
     filterTypes.forEach((type) => {
         if (type.name === chosenName) {
             chosenType.type = chosenName
@@ -107,15 +114,12 @@ const getItemDOM = (itemName, editState, type) => {
             e.preventDefault()
 
             if(type === 'ingre') {
-                filterIngre = JSON.parse(localStorage.getItem('filterIngre'))
                 const itemIndex = filterIngre.findIndex((ingre) => {
                     return ingre.name === e.target.name
                 })
                 filterIngre.splice(itemIndex, 1)
                 localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
             } else if(type === 'type') {
-                filterTypes = JSON.parse(localStorage.getItem('filterTypes'))
-
                 const itemIndex = filterTypes.findIndex((type) => {
                     return type.name === e.target.name
                 })
@@ -136,8 +140,8 @@ const getItemDOM = (itemName, editState, type) => {
 const renderItemFilter = (editState, type) => {
     
     const filterItems = type === 'ingre' 
-    ? JSON.parse(localStorage.getItem('filterIngre'))
-    : JSON.parse(localStorage.getItem('filterTypes'))
+    ? getFilterIngre()
+    : getFilterType()
     
     const itemArea = document.querySelector(`#${type}Area`)
     itemArea.innerHTML = ''
@@ -176,12 +180,10 @@ const handleAddFilter = (type) => {
         }
 
         if(type === 'ingre') {
-            filterIngre = JSON.parse(localStorage.getItem('filterIngre'))
             filterIngre.push(newItem)  
             localStorage.setItem('filterIngre', JSON.stringify(filterIngre))
             renderItemFilter(editState.ingre, type)
         } else {
-            filterTypes = JSON.parse(localStorage.getItem('filterTypes'))
             filterTypes.push(newItem)  
             localStorage.setItem('filterTypes', JSON.stringify(filterTypes))
             renderItemFilter(editState.type, type)
@@ -194,5 +196,4 @@ handleAddFilter('ingre')
 handleAddFilter('type')
 
 
-export {renderItemFilter, editState,  
-        filterTypes, pickType, chosenType }
+export {renderItemFilter, editState, pickType, chosenType }
