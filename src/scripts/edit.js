@@ -1,10 +1,6 @@
-// import { saveData } from './recipe'
-// import { getFilterType } from './filters'
 import uuidv4 from 'uuid/v4'
 
-// const recipes = getData()
 const recipeID = location.hash.substring(1)
-// const theIngres = recipes.find((recipe) => recipe.id === recipeID)
 
 let theIngres;
 let theRecipe;
@@ -18,24 +14,20 @@ if (recipeID.length > 0) {
 }
 
 const getTypeDOM = (typeName) => {
-    // '라디오박스' 만들기
+    // Create a child of '<select>'
     const option = document.createElement('option')
     option.setAttribute('id', typeName)
     option.setAttribute('value', typeName)
     option.classList.add('foodType')
     option.textContent = typeName.charAt(0).toUpperCase() + typeName.slice(1).split('-').join(' ')
 
-    // const select = document.querySelector('#editType')
-    // select.appendChild(option)
     return option
 }
 
-const renderTypeFilter = () => {
+const renderType = () => {
     const filterTypes = JSON.parse(localStorage.getItem('filterTypes'))
-
-    const editType = document.querySelector('#editType')
+    const editType = document.querySelector('#editType') // === <select>
     editType.innerHTML = ''
-
     filterTypes.forEach((type) => {
         return editType.appendChild(getTypeDOM(type.name))
     })
@@ -58,7 +50,7 @@ const generateIngreDOM = (ingre, type) => {
     const removeEl = document.createElement('button')
 
     nameEl.value = ingre.name.toLowerCase()
-    amountEl.value = ingre.amount
+    amountEl.value = ingre.amount.toLowerCase()
 
     if(type === 'main') {
         ingreLi.setAttribute('id', 'mainIngre')
@@ -69,14 +61,9 @@ const generateIngreDOM = (ingre, type) => {
     nameEl.setAttribute('maxlength', '15')
     amountEl.setAttribute('placeholder', 'amount')
     nameEl.setAttribute('maxlength', '15')
-
-    nameEl.addEventListener('change', (e) => {
-        console.log(e)
-    })
     
-
-    // Input Event Handler
-    nameEl.addEventListener('input', (e) => {
+    // Input(name) Event Handler
+    nameEl.addEventListener('input', () => {
         type === 'main' ? theIngres.mainIngre = [] : theIngres.subIngre = []
         Array.from(document.querySelector(`#${type}IngreArea`).children).forEach((each) => {
             const name = each.children[0].value
@@ -86,7 +73,9 @@ const generateIngreDOM = (ingre, type) => {
         })
         localStorage.setItem(`${type}Ingre`, JSON.stringify(theIngres[`${type}Ingre`]))
     })
-    amountEl.addEventListener('input', (e) => {
+
+    // Input(amount) Event Handler
+    amountEl.addEventListener('input', () => {
         type === 'main' ? theIngres.mainIngre = [] : theIngres.subIngre = []
         Array.from(document.querySelector(`#${type}IngreArea`).children).forEach((each) => {
             const name = each.children[0].value
@@ -141,7 +130,7 @@ const renderIngre = (type) => {
 }
 
 // fetch GET해서 type 정보 받아오기
-renderTypeFilter()
+renderType()
 
 // Initial query from data
 if (recipeID.length > 0) { // hash 있음 (기존 Recipe 편집)
