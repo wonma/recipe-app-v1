@@ -11,7 +11,7 @@ module.exports = {
         view: ['babel-polyfill', './src/scripts/view.js']
     },  
     output: {
-        path: path.resolve(__dirname, 'public/scripts'),
+        path: path.resolve(__dirname, 'docs/scripts'),
         filename: '[name]-bundle.js'
     },
     module: {
