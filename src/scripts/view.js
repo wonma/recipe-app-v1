@@ -2,7 +2,7 @@ const recipeID = location.hash.substring(1)
 const token = localStorage.getItem('x-auth')
 
 if (recipeID.length > 0) {
-    fetch(`http://ingre-app.herokuapp.com/recipes/${recipeID}`, {
+    fetch(`https://ingre-app.herokuapp.com/recipes/${recipeID}`, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
