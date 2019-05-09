@@ -35,7 +35,7 @@ const addFilterItem = (editState, filterName) => {
         items = { filterTypes: updatedTypes }
     }
 
-    fetch(`http://ingre-app.herokuapp.com/users/me/${filterName + 's'}`, {
+    fetch(`https://ingre-app.herokuapp.com/users/me/${filterName + 's'}`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ document.querySelector('#add-type').addEventListener('click', (e) => {
 
 let getRecipes = []
 
-fetch('http://ingre-app.herokuapp.com/recipes', {
+fetch('https://ingre-app.herokuapp.com/recipes', {
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ fetch('http://ingre-app.herokuapp.com/recipes', {
 
 // Log out 
 document.querySelector('#logout').addEventListener('click', (e) => {
-    fetch('http://ingre-app.herokuapp.com/users/me/token', {
+    fetch('https://ingre-app.herokuapp.com/users/me/token', {
         method: 'delete',
         headers: {
             'Content-Type': 'application/json',
